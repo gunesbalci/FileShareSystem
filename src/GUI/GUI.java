@@ -1,5 +1,6 @@
 package GUI;
 
+import User.User;
 import User.UserServices;
 
 import javax.swing.*;
@@ -152,8 +153,10 @@ public class GUI
                 int code = UserServices.SignIn(usernameTF.getText(), Arrays.toString(passwordTF.getPassword()));
                 if(code == 2)
                 {
-                    alertLabel.setText("Sign In Successful");
-                    alertLabel.setForeground(Color.green);
+                    frame.getContentPane().removeAll();
+                    frame.add(UserScreen());
+                    frame.revalidate();
+                    frame.repaint();
                 }
                 else
                 {
@@ -186,6 +189,32 @@ public class GUI
         panel.add(emptyLabel);
         panel.add(SignInB);
         panel.add(toRegisterB);
+
+        return panel;
+    }
+
+    public static JPanel UserScreen()
+    {
+        JPanel panel = new JPanel();
+        panel.setOpaque(true);
+
+        JButton signOutB = new JButton("Sign Out");
+
+        ActionListener signOutBHandler = new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                frame.getContentPane().removeAll();
+                frame.add(SignInScreen());
+                frame.revalidate();
+                frame.repaint();
+            }
+        };
+
+        signOutB.addActionListener(signOutBHandler);
+
+        panel.add(signOutB);
 
         return panel;
     }
