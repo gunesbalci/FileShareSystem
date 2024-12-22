@@ -14,6 +14,7 @@ public class User
     private int max_fileNum;
     private int role;
 
+    //Constructs user. Can hash the password.
     public User(String username, String password, boolean HashPassword)
     {
         setId(UUID.randomUUID().toString());
@@ -29,6 +30,7 @@ public class User
         }
     }
 
+    //Returns the query to insert this user into database.
     public String getInsertString()
     {
         String InsertIntoString = "INSERT INTO " + MyConnection.getUserTable();
@@ -66,6 +68,7 @@ public class User
         return password;
     }
 
+    //First hashes the given password then sets the hashed password.
     public void HashandSetPassword(String password)
     {
         String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt(12));
