@@ -1,18 +1,18 @@
 package GUI;
 
-import User.User;
-import User.UserServices;
+import LOG.SignInOut_LOG;
+import User.*;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Arrays;
-import java.util.Objects;
 
 public class GUI
 {
     public static JFrame frame;
+    private static User user;
     //Initializes frame and its some settings. Then adds the screen(s).
     public static void InitializeFrame()
     {
@@ -157,6 +157,9 @@ public class GUI
                     frame.add(UserScreen());
                     frame.revalidate();
                     frame.repaint();
+
+                    user = UserDBServices.GetUserWname(usernameTF.getText());
+                    SignInOut_LOG.LogSignIn(user.getId());
                 }
                 else
                 {
@@ -209,6 +212,9 @@ public class GUI
                 frame.add(SignInScreen());
                 frame.revalidate();
                 frame.repaint();
+
+                SignInOut_LOG.LogSignIn(user.getId());
+                user = null;
             }
         };
 
