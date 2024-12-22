@@ -5,19 +5,18 @@ import java.util.Objects;
 
 import MyConnection.MyConnection;
 
-public class UserDatabaseSubServices
+//User's database related services.
+public class UserDBServices
 {
     private static MyConnection MC;
 
-    public static void CreateUser(String username, String password)
+    //Inserts the given user into database.
+    public static void CreateUser(User user)
     {
-        User user = new User(username, password, true);
-
         try(Connection connection = DriverManager.getConnection(MC.getMyConnection(),MC.getUsername(),MC.getPassword()))
         {
             Statement stmt = connection.createStatement();
             stmt.execute(user.getInsertString());
-
 
             connection.close();
 
@@ -29,6 +28,7 @@ public class UserDatabaseSubServices
         }
     }
 
+    //Gets the user the given id belongs to from database.
     public static User GetUser(String id)
     {
         String SelectString = "SELECT * FROM " + MC.getUserTable();
@@ -65,6 +65,7 @@ public class UserDatabaseSubServices
         return null;
     }
 
+    //Gets the user given username belongs to from database.
     public static User GetUserWname(String username)
     {
         String SelectString = "SELECT * FROM " + MC.getUserTable();
@@ -102,6 +103,7 @@ public class UserDatabaseSubServices
         return null;
     }
 
+    //Deletes the user given id belongs to from database.
     public static void DeleteUser(String id)
     {
         String DeleteString = "DELETE FROM " + MC.getUserTable();
@@ -122,6 +124,7 @@ public class UserDatabaseSubServices
         }
     }
 
+    //Updates users given attribute with given data from database.
     public static void UpdateUser(String id, String columnToUpdate, String update)
     {
         String UpdateString = "UPDATE " + MC.getUserTable();
@@ -153,11 +156,13 @@ public class UserDatabaseSubServices
         }
     }
 
+    //Checks if the given id exist in the database or not.
     public static boolean isUserIDExist(String id)
     {
         return GetUser(id) != null;
     }
 
+    //Checks if the given username exist in the database or not.
     public static boolean isUserNameExist(String name)
     {
         return GetUserWname(name) != null;
