@@ -10,6 +10,7 @@ public class SignInOut_LOG
 {
     private static File SignInOutLogs;
 
+    //Creates and initializes the log file.
     public static void InitializeFile()
     {
         try
@@ -24,7 +25,8 @@ public class SignInOut_LOG
         }
     }
 
-    public static void LogSignIn(String id)
+    //Logs sign in action with user id, date, and action's status.
+    public static void LogSignIn(String id, String status)
     {
         String formattedDateTime = ZonedDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
 
@@ -34,7 +36,8 @@ public class SignInOut_LOG
 
             String LogString = id + "...";
             LogString += "signIn" + "...";
-            LogString += formattedDateTime;
+            LogString += status + "...";
+            LogString += formattedDateTime + "\n";
 
             fileWriter.write(LogString);
             fileWriter.close();
@@ -46,7 +49,8 @@ public class SignInOut_LOG
         }
     }
 
-    public static void LogSignOut(String id)
+    //Logs sign out action with user id, date, and action's status.
+    public static void LogSignOut(String id, String status)
     {
         String formattedDateTime = ZonedDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
 
@@ -56,7 +60,8 @@ public class SignInOut_LOG
 
             String LogString = id + "...";
             LogString += "signOut" + "...";
-            LogString += formattedDateTime;
+            LogString += status + "...";
+            LogString += formattedDateTime + "\n";
 
             fileWriter.write(LogString);
             fileWriter.close();
