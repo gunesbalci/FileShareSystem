@@ -159,7 +159,16 @@ public class GUI
                     frame.repaint();
 
                     user = UserDBServices.GetUserWname(usernameTF.getText());
-                    SignInOut_LOG.LogSignIn(user.getId());
+                    SignInOut_LOG.LogSignIn(user.getId(), "successful");
+                }
+                else if(code == 1)
+                {
+                    alertLabel.setText("Sign In Failed");
+                    alertLabel.setForeground(Color.red);
+
+                    user = UserDBServices.GetUserWname(usernameTF.getText());
+                    SignInOut_LOG.LogSignIn(user.getId(), "failed");
+                    user = null;
                 }
                 else
                 {
@@ -213,7 +222,7 @@ public class GUI
                 frame.revalidate();
                 frame.repaint();
 
-                SignInOut_LOG.LogSignIn(user.getId());
+                SignInOut_LOG.LogSignOut(user.getId(), "successful");
                 user = null;
             }
         };
