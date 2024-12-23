@@ -9,7 +9,7 @@ public class UserServices
     enum ErrorCodes
     {
         INVALID_USERNAME_ID,
-        INVALID_USERNAME_PASSWORD,
+        INVALID_PASSWORD,
         SUCCESSFUL
     }
 
@@ -38,9 +38,13 @@ public class UserServices
         {
             return ErrorCodes.SUCCESSFUL.ordinal();
         }
+        else if(user == null)
+        {
+            return ErrorCodes.INVALID_USERNAME_ID.ordinal();
+        }
         else
         {
-            return  ErrorCodes.INVALID_USERNAME_PASSWORD.ordinal();
+            return ErrorCodes.INVALID_PASSWORD.ordinal();
         }
     }
 }
