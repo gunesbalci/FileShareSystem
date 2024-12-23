@@ -30,7 +30,7 @@ public class SignInOut_LOG
 
         try
         {
-            FileWriter fileWriter = new FileWriter(SignInOutLogs);
+            FileWriter fileWriter = new FileWriter(SignInOutLogs, true);
 
             String LogString = id + "...";
             LogString += "signIn" + "...";
@@ -52,7 +52,7 @@ public class SignInOut_LOG
 
         try
         {
-            FileWriter fileWriter = new FileWriter(SignInOutLogs);
+            FileWriter fileWriter = new FileWriter(SignInOutLogs, true);
 
             String LogString = id + "...";
             LogString += "signOut" + "...";
