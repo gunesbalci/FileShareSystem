@@ -1,10 +1,11 @@
 package LOG;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Scanner;
 
 public class SignInOut_LOG
 {
@@ -71,5 +72,57 @@ public class SignInOut_LOG
             e.printStackTrace();
             throw new RuntimeException(e);
         }
+    }
+
+    public static void readFile()
+    {
+        try
+        {
+            Scanner fileReader = new Scanner(SignInOutLogs);
+            int failCount = 0;
+            LocalDateTime lastFailedTime = null;
+
+            while(fileReader.hasNextLine())
+            {
+                String singleLog =fileReader.nextLine();
+                String[] logContent = singleLog.split("\\.\\.\\.");
+
+                if(logContent[1] == "signIn" && logContent[2] == "failed")
+                {
+                    LocalDateTime recentFailedTime = LocalDateTime.parse(logContent[3]);
+                    if(lastFailedTime != null)
+                    {
+                        Duration duration = Duration.between(lastFailedTime,recentFailedTime);
+                        if(duration.toMinutes() <= 2)
+                        {
+                            failCount++;
+                            if(failCount > 3)
+                            {
+                                System.out.println("ANOMALY");
+                            }
+                        }
+                        else
+                        {
+                            failCount = 0;
+                        }
+                    }
+                    else
+                    {
+                        lastFailedTime = recentFailedTime;
+                    }
+
+                }
+            }
+
+        }
+        catch (FileNotFoundException e)
+        {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static void main(String[] args)
+    {
+        readFile();
     }
 }
