@@ -1,6 +1,7 @@
 package GUI;
 
 import LOG.SignInOut_LOG;
+import Team.Team;
 import Team.TeamServices;
 import User.*;
 
@@ -214,15 +215,20 @@ public class GUI
         JPanel panel = new JPanel(new BorderLayout());
         panel.setOpaque(true);
 
-        JPanel AppActionPanel = new JPanel();
+        JPanel AppActionPanel = new JPanel(new GridBagLayout());
         JPanel UserActionPanel = new JPanel();
         JPanel MiddlePanel = new JPanel();
+        JPanel AppActionButtonsPanel = new JPanel(new GridLayout(2,1,0,10));
         JButton createTeamB = new JButton("Create Team");
+        JButton shareFileB = new JButton("Share File");
         JButton signOutB = new JButton("Sign Out");
 
-        AppActionPanel.setPreferredSize(new Dimension(500, 1080));
-        UserActionPanel.setPreferredSize(new Dimension(500, 1080));
-        MiddlePanel.setPreferredSize(new Dimension(920, 1080));
+        AppActionPanel.setPreferredSize(new Dimension(400, 1080));
+        UserActionPanel.setPreferredSize(new Dimension(400, 1080));
+        MiddlePanel.setPreferredSize(new Dimension(820, 1080));
+        AppActionButtonsPanel.setPreferredSize(new Dimension(300,110));
+
+        AppActionButtonsPanel.setAlignmentX(0);
 
         AppActionPanel.setBackground(Color.red);
         UserActionPanel.setBackground(Color.green);
@@ -235,6 +241,18 @@ public class GUI
             {
                 MiddlePanel.removeAll();
                 MiddlePanel.add(TeamCreatePanel());
+                MiddlePanel.revalidate();
+                MiddlePanel.repaint();
+            }
+        };
+
+        ActionListener shareFileBHandler = new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                MiddlePanel.removeAll();
+                MiddlePanel.add(FileSharePanel());
                 MiddlePanel.revalidate();
                 MiddlePanel.repaint();
             }
@@ -256,10 +274,13 @@ public class GUI
         };
 
         createTeamB.addActionListener(createTeamBHandler);
+        shareFileB.addActionListener(shareFileBHandler);
         signOutB.addActionListener(signOutBHandler);
 
         UserActionPanel.add(signOutB);
-        AppActionPanel.add(createTeamB);
+        AppActionButtonsPanel.add(createTeamB);
+        AppActionButtonsPanel.add(shareFileB);
+        AppActionPanel.add(AppActionButtonsPanel);
 
         panel.add(AppActionPanel, BorderLayout.WEST);
         panel.add(UserActionPanel, BorderLayout.EAST);
@@ -323,6 +344,27 @@ public class GUI
         panel.add(checkboxPanel);
         panel.add(teamNamePanel);
 
+        return panel;
+    }
+
+    public static JPanel FileSharePanel()
+    {
+        JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        panel.setPreferredSize(new Dimension(820, 1080));
+
+        JPanel checkboxPanel = new JPanel();
+        checkboxPanel.setLayout(new GridLayout(5,3));
+
+        List<Team> teamList = TeamServices.GetMemberTable(user.getId());
+        Dictionary<JCheckBox, Team> checkbox_user = new Hashtable<JCheckBox, Team>();
+        for (Team team: teamList)
+        {
+            JCheckBox checkBox = new JCheckBox(team.getName());
+            checkboxPanel.add(checkBox);
+            checkbox_user.put(checkBox, team);
+        }
+
+        panel.add(checkboxPanel);
         return panel;
     }
 }
