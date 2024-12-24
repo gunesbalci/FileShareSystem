@@ -5,7 +5,11 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Dictionary;
+import java.util.Hashtable;
+import java.util.Objects;
 import java.util.Scanner;
+import MultiProcess.Process;
 
 public class SignInOut_LOG
 {
@@ -76,53 +80,60 @@ public class SignInOut_LOG
 
     public static void readFile()
     {
-        try
+        try(RandomAccessFile fileReader = new RandomAccessFile(SignInOutLogs, "r"))
         {
-            Scanner fileReader = new Scanner(SignInOutLogs);
-            int failCount = 0;
-            LocalDateTime lastFailedTime = null;
+            fileReader.seek(LastReadPosition.GetLastReadPosition(0));
 
-            while(fileReader.hasNextLine())
+            Dictionary<String, Integer> failCount = new Hashtable<>();
+            Dictionary<String, LocalDateTime> lastFailedTime = new Hashtable<>();
+
+            String singleLog = fileReader.readLine();
+            while(singleLog != null)
             {
-                String singleLog =fileReader.nextLine();
                 String[] logContent = singleLog.split("\\.\\.\\.");
 
-                if(logContent[1] == "signIn" && logContent[2] == "failed")
+                if(Objects.equals(logContent[1], "signIn") && Objects.equals(logContent[2], "failed"))
                 {
                     LocalDateTime recentFailedTime = LocalDateTime.parse(logContent[3]);
-                    if(lastFailedTime != null)
+                    if(lastFailedTime.get(logContent[0]) != null)
                     {
-                        Duration duration = Duration.between(lastFailedTime,recentFailedTime);
+                        Duration duration = Duration.between(lastFailedTime.get(logContent[0]),recentFailedTime);
                         if(duration.toMinutes() <= 2)
                         {
-                            failCount++;
-                            if(failCount > 3)
+                            Integer count = failCount.get(logContent[0]);
+                            count++;
+                            failCount.put(logContent[0], count);
+                            if(count > 3)
                             {
                                 System.out.println("ANOMALY");
+                                failCount.put(logContent[0], 0);
                             }
                         }
                         else
                         {
-                            failCount = 0;
+                            failCount.put(logContent[0], 1);
                         }
+                        lastFailedTime.put(logContent[0], recentFailedTime);
                     }
                     else
                     {
-                        lastFailedTime = recentFailedTime;
+                        lastFailedTime.put(logContent[0], recentFailedTime);
+                        failCount.put(logContent[0], 1);
                     }
-
                 }
+                singleLog = fileReader.readLine();
             }
-
+            LastReadPosition.WriteLastReadPosition(0, fileReader.getFilePointer());
         }
-        catch (FileNotFoundException e)
+        catch (IOException e)
         {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
     }
 
     public static void main(String[] args)
     {
+        InitializeFile();
         readFile();
     }
 }
