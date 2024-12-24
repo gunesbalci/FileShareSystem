@@ -1,6 +1,8 @@
 package User;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import MyConnection.MyConnection;
@@ -101,6 +103,42 @@ public class UserDBServices
             e.printStackTrace();
         }
         return null;
+    }
+
+    public static List<User> GetAllUser()
+    {
+        String SelectString = "SELECT * FROM " + MC.getUserTable();
+
+        try(Connection connection = DriverManager.getConnection(MC.getMyConnection(),MC.getUsername(),MC.getPassword()))
+        {
+            Statement stmt = connection.createStatement();
+            ResultSet rs = stmt.executeQuery(SelectString);
+
+            if(!rs.next())
+            {
+                return null;
+            }
+
+            List<User> userList = new ArrayList<>();
+            while(rs.next())
+            {
+                String username = rs.getString("username");
+                String password = rs.getString("password");
+                String id = rs.getString("id");
+                User user = new User(username, password, false);
+                user.setId(id);
+                userList.add(user);
+            }
+
+            rs.close();
+            connection.close();
+
+            return userList;
+        }
+        catch (SQLException e)
+        {
+            throw new RuntimeException(e);
+        }
     }
 
     //Deletes the user given id belongs to from database.
