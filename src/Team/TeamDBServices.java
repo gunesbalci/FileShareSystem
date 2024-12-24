@@ -81,11 +81,7 @@ public class TeamDBServices
             Statement stmt = connection.createStatement();
 
             ResultSet rs = stmt.executeQuery(SelectTeamString);
-            if(!rs.next())
-            {
-                return null;
-            }
-
+            
             List<Team> teamList = new ArrayList<>();
             while (rs.next())
             {
