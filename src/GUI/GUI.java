@@ -1,13 +1,17 @@
 package GUI;
 
 import LOG.SignInOut_LOG;
+import Team.TeamServices;
 import User.*;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Arrays;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.util.*;
+import java.util.List;
 
 public class GUI
 {
@@ -207,10 +211,34 @@ public class GUI
 
     public static JPanel UserScreen()
     {
-        JPanel panel = new JPanel();
+        JPanel panel = new JPanel(new BorderLayout());
         panel.setOpaque(true);
 
+        JPanel AppActionPanel = new JPanel();
+        JPanel UserActionPanel = new JPanel();
+        JPanel MiddlePanel = new JPanel();
+        JButton createTeamB = new JButton("Create Team");
         JButton signOutB = new JButton("Sign Out");
+
+        AppActionPanel.setPreferredSize(new Dimension(500, 1080));
+        UserActionPanel.setPreferredSize(new Dimension(500, 1080));
+        MiddlePanel.setPreferredSize(new Dimension(920, 1080));
+
+        AppActionPanel.setBackground(Color.red);
+        UserActionPanel.setBackground(Color.green);
+        MiddlePanel.setBackground(Color.blue);
+
+        ActionListener createTeamBHandler = new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                MiddlePanel.removeAll();
+                MiddlePanel.add(TeamCreatePanel());
+                MiddlePanel.revalidate();
+                MiddlePanel.repaint();
+            }
+        };
 
         ActionListener signOutBHandler = new ActionListener()
         {
@@ -227,9 +255,73 @@ public class GUI
             }
         };
 
+        createTeamB.addActionListener(createTeamBHandler);
         signOutB.addActionListener(signOutBHandler);
 
-        panel.add(signOutB);
+        UserActionPanel.add(signOutB);
+        AppActionPanel.add(createTeamB);
+
+        panel.add(AppActionPanel, BorderLayout.WEST);
+        panel.add(UserActionPanel, BorderLayout.EAST);
+        panel.add(MiddlePanel, BorderLayout.CENTER);
+
+        return panel;
+    }
+
+    public static JPanel TeamCreatePanel()
+    {
+        JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        panel.setPreferredSize(new Dimension(920, 1080));
+
+        JPanel teamNamePanel = new JPanel();
+        teamNamePanel.setLayout(new GridLayout(3,1,0,10));
+        teamNamePanel.setPreferredSize(new Dimension(450,140));
+
+        JPanel checkboxPanel = new JPanel();
+        checkboxPanel.setLayout(new GridLayout(5,3));
+        checkboxPanel.setPreferredSize(new Dimension(450,140));
+
+        List<User> userList = UserDBServices.GetAllUser();
+        Dictionary<JCheckBox, User> checkbox_user = new Hashtable<JCheckBox, User>();
+        for (User users: userList)
+        {
+            JCheckBox checkBox = new JCheckBox(users.getUsername());
+            checkboxPanel.add(checkBox);
+            checkbox_user.put(checkBox, users);
+        }
+        JButton createB = new JButton("Create Team");
+        JTextField textField = new JTextField();
+        JLabel nameTeam = new JLabel("Team name:");
+
+        ActionListener createBHandler = new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                String teamName = textField.getText();
+                Enumeration<JCheckBox> keys = checkbox_user.keys();
+                List<String> memberList = new ArrayList<>();
+                while (keys.hasMoreElements())
+                {
+                    JCheckBox checkBox = keys.nextElement();
+                    if(checkBox.isSelected())
+                    {
+                        User user = checkbox_user.get(checkBox);
+                        memberList.add(user.getId());
+                    }
+                }
+                memberList.add(user.getId());
+                TeamServices.CreateTable(teamName, memberList);
+            }
+        };
+
+        createB.addActionListener(createBHandler);
+
+        teamNamePanel.add(nameTeam);
+        teamNamePanel.add(textField);
+        teamNamePanel.add(createB);
+        panel.add(checkboxPanel);
+        panel.add(teamNamePanel);
 
         return panel;
     }
