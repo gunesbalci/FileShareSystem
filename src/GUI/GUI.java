@@ -1,6 +1,7 @@
 package GUI;
 
 import LOG.SignInOut_LOG;
+import LOG.Team_LOG;
 import Team.Team;
 import Team.TeamServices;
 import User.*;
@@ -332,7 +333,8 @@ public class GUI
                     }
                 }
                 memberList.add(user.getId());
-                TeamServices.CreateTable(teamName, memberList);
+                Team team = TeamServices.CreateTable(teamName, memberList);
+                Team_LOG.LogTeam(user.getId(), team.getId());
             }
         };
 
