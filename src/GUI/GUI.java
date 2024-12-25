@@ -1,5 +1,6 @@
 package GUI;
 
+import AppFile.FileServices;
 import LOG.SignInOut_LOG;
 import LOG.Team_LOG;
 import Team.Team;
@@ -7,11 +8,11 @@ import Team.TeamServices;
 import User.*;
 
 import javax.swing.*;
+import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
+import java.io.File;
 import java.util.*;
 import java.util.List;
 
@@ -221,6 +222,7 @@ public class GUI
         JPanel MiddlePanel = new JPanel();
         JPanel AppActionButtonsPanel = new JPanel(new GridLayout(2,1,0,10));
         JButton createTeamB = new JButton("Create Team");
+        JButton fileUploadB = new JButton("Upload File");
         JButton shareFileB = new JButton("Share File");
         JButton signOutB = new JButton("Sign Out");
 
@@ -242,6 +244,18 @@ public class GUI
             {
                 MiddlePanel.removeAll();
                 MiddlePanel.add(TeamCreatePanel());
+                MiddlePanel.revalidate();
+                MiddlePanel.repaint();
+            }
+        };
+
+        ActionListener fileUploadBHandler = new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                MiddlePanel.removeAll();
+                MiddlePanel.add(FileUploadPanel());
                 MiddlePanel.revalidate();
                 MiddlePanel.repaint();
             }
@@ -275,11 +289,13 @@ public class GUI
         };
 
         createTeamB.addActionListener(createTeamBHandler);
+        fileUploadB.addActionListener(fileUploadBHandler);
         shareFileB.addActionListener(shareFileBHandler);
         signOutB.addActionListener(signOutBHandler);
 
         UserActionPanel.add(signOutB);
         AppActionButtonsPanel.add(createTeamB);
+        AppActionButtonsPanel.add(fileUploadB);
         AppActionButtonsPanel.add(shareFileB);
         AppActionPanel.add(AppActionButtonsPanel);
 
@@ -351,22 +367,113 @@ public class GUI
 
     public static JPanel FileSharePanel()
     {
-        JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        JPanel panel = new JPanel();
         panel.setPreferredSize(new Dimension(820, 1080));
 
-        JPanel checkboxPanel = new JPanel();
-        checkboxPanel.setLayout(new GridLayout(5,3));
+        JPanel team_file_panels = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 0));
+
+        JPanel teamPanel = new JPanel(new GridLayout(2,1));
+        JPanel filePanel = new JPanel(new GridLayout(2,1));
+        JPanel checkboxTeamPanel = new JPanel(new GridLayout(5,3));
+        JPanel checkboxFilePanel = new JPanel(new GridLayout(5,3));
+
+        teamPanel.setPreferredSize(new Dimension(350, 300));
+        filePanel.setPreferredSize(new Dimension(350, 300));
+
+        teamPanel.setBorder(new LineBorder(Color.gray));
+        filePanel.setBorder(new LineBorder(Color.gray));
 
         List<Team> teamList = TeamServices.GetMemberTable(user.getId());
-        Dictionary<JCheckBox, Team> checkbox_user = new Hashtable<JCheckBox, Team>();
+        Dictionary<JRadioButton, Team> checkbox_user = new Hashtable<JRadioButton, Team>();
+        ButtonGroup teamButtonGroup = new ButtonGroup();
         for (Team team: teamList)
         {
-            JCheckBox checkBox = new JCheckBox(team.getName());
-            checkboxPanel.add(checkBox);
+            JRadioButton checkBox = new JRadioButton(team.getName());
+            checkboxTeamPanel.add(checkBox);
             checkbox_user.put(checkBox, team);
+            teamButtonGroup.add(checkBox);
         }
 
-        panel.add(checkboxPanel);
+        File[] fileList = FileServices.GetUserFiles(user.getId());
+        Dictionary<JRadioButton, File> checkbox_file = new Hashtable<>();
+        ButtonGroup fileButtonGroup = new ButtonGroup();
+        for (File file : fileList)
+        {
+            JRadioButton checkBox = new JRadioButton(file.getName());
+            checkboxFilePanel.add(checkBox);
+            checkbox_file.put(checkBox, file);
+            fileButtonGroup.add(checkBox);
+        }
+
+        JLabel filePanelL = new JLabel("Select a file:");
+        JLabel teamPanelL = new JLabel("Select a team:");
+        JButton shareFileB = new JButton("Share File");
+
+        ActionListener shareFileBHandler = new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                Team team;
+                for (AbstractButton button : java.util.Collections.list(teamButtonGroup.getElements()))
+                {
+                    if (button.isSelected())
+                    {
+                        team = checkbox_user.get(button);
+                        break;
+                    }
+                }
+
+                File file;
+                for (AbstractButton button : java.util.Collections.list(fileButtonGroup.getElements()))
+                {
+                    if (button.isSelected())
+                    {
+                        file = checkbox_file.get(button);
+                        break;
+                    }
+                }
+            }
+        };
+
+        shareFileB.addActionListener(shareFileBHandler);
+
+        teamPanel.add(teamPanelL);
+        teamPanel.add(checkboxTeamPanel);
+        filePanel.add(filePanelL);
+        filePanel.add(checkboxFilePanel);
+        team_file_panels.add(teamPanel);
+        team_file_panels.add(filePanel);
+        panel.add(team_file_panels);
+        panel.add(shareFileB);
+        return panel;
+    }
+
+    public static JPanel FileUploadPanel()
+    {
+        JPanel panel = new JPanel();
+        panel.setPreferredSize(new Dimension(820, 1080));
+
+        JLabel fileLabel = new JLabel("Select your file:");
+        JFileChooser fileChooser = new JFileChooser();
+        JButton uploadB = new JButton("Upload File");
+
+        ActionListener uploadBHandler = new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                File uploadFile = fileChooser.getSelectedFile();
+                FileServices.FileUpload(uploadFile, user.getId(), uploadFile.getName());
+            }
+        };
+
+        uploadB.addActionListener(uploadBHandler);
+
+        panel.add(fileLabel);
+        panel.add(fileChooser);
+        panel.add(uploadB);
+
         return panel;
     }
 }
