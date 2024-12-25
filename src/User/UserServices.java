@@ -55,13 +55,7 @@ public class UserServices
     {
         List<User> allUserList = UserDBServices.GetAllUser();
 
-        for(User user : allUserList)
-        {
-            if (Objects.equals(user.getId(), ID))
-            {
-                allUserList.remove(user);
-            }
-        }
+        allUserList.removeIf(user -> Objects.equals(user.getId(), ID));
 
         return allUserList;
     }
