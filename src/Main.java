@@ -1,4 +1,5 @@
 import GUI.GUI;
+import LOG.FileServices;
 import LOG.SignInOut_LOG;
 import MultiProcess.Process;
 
@@ -9,7 +10,7 @@ public class Main
 {
     public static void main(String[] args)
     {
-        SignInOut_LOG.InitializeFile();
+        FileServices.InitializeAllFiles();
         GUI.InitializeFrame();
         Process.StartSignInOut();
     }

@@ -105,7 +105,7 @@ public class SignInOut_LOG
                             failCount.put(logContent[0], count);
                             if(count > 3)
                             {
-                                System.out.println("ANOMALY");
+                                Abnormal_LOG.LogTeam(logContent[0], "FAILED_SIGN_IN");
                                 failCount.put(logContent[0], 0);
                             }
                         }
@@ -133,7 +133,7 @@ public class SignInOut_LOG
 
     public static void main(String[] args)
     {
-        InitializeFile();
+        FileServices.InitializeAllFiles();
         readFile();
     }
 }

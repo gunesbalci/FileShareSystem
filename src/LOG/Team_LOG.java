@@ -6,16 +6,16 @@ import java.io.IOException;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class Abnormal_LOG
+public class Team_LOG
 {
-    private static File AbnormalLogs;
+    private static File TeamLogs;
 
     public static void InitializeFile()
     {
         try
         {
-            AbnormalLogs = new File("src/LOG/Files/AbnormalLOG.txt");
-            AbnormalLogs.createNewFile();
+            TeamLogs = new File("src/LOG/Files/TeamLOG.txt");
+            TeamLogs.createNewFile();
         }
         catch (IOException e)
         {
@@ -24,20 +24,17 @@ public class Abnormal_LOG
         }
     }
 
-    public static void LogTeam(String userID, String behaviourCode)
+    public static void LogTeam(String CreatorID, String TeamID)
     {
         String formattedDateTime = ZonedDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
 
         try
         {
-            if (AbnormalLogs == null) {
-                throw new IllegalStateException("AbnormalLogs is not initialized!");
-            }
-            FileWriter fileWriter = new FileWriter(AbnormalLogs, true);
+            FileWriter fileWriter = new FileWriter(TeamLogs, true);
 
-            String LogString = userID + "...";
-            LogString += "abnormalBehaviour" + "...";
-            LogString += behaviourCode + "...";
+            String LogString = CreatorID + "...";
+            LogString += TeamID + "...";
+            LogString += "teamCreation" + "...";
             LogString += formattedDateTime + "\n";
 
             fileWriter.write(LogString);
