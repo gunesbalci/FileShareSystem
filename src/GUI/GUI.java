@@ -292,17 +292,17 @@ public class GUI
     public static JPanel TeamCreatePanel()
     {
         JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        panel.setPreferredSize(new Dimension(920, 1080));
+        panel.setPreferredSize(new Dimension(820, 1080));
 
         JPanel teamNamePanel = new JPanel();
         teamNamePanel.setLayout(new GridLayout(3,1,0,10));
-        teamNamePanel.setPreferredSize(new Dimension(450,140));
+        teamNamePanel.setPreferredSize(new Dimension(400,140));
 
         JPanel checkboxPanel = new JPanel();
         checkboxPanel.setLayout(new GridLayout(5,3));
-        checkboxPanel.setPreferredSize(new Dimension(450,140));
+        checkboxPanel.setPreferredSize(new Dimension(400,140));
 
-        List<User> userList = UserDBServices.GetAllUser();
+        List<User> userList = UserServices.AllUsersExceptOne(user.getId());
         Dictionary<JCheckBox, User> checkbox_user = new Hashtable<JCheckBox, User>();
         for (User users: userList)
         {
