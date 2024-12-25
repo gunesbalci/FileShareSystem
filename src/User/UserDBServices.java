@@ -113,12 +113,7 @@ public class UserDBServices
         {
             Statement stmt = connection.createStatement();
             ResultSet rs = stmt.executeQuery(SelectString);
-
-            if(!rs.next())
-            {
-                return null;
-            }
-
+            
             List<User> userList = new ArrayList<>();
             while(rs.next())
             {

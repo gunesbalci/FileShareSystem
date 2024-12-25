@@ -2,6 +2,9 @@ package User;
 
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
+import java.util.List;
+import java.util.Objects;
+
 //User's services that will be used in GUI.
 public class UserServices
 {
@@ -46,5 +49,20 @@ public class UserServices
         {
             return ErrorCodes.INVALID_PASSWORD.ordinal();
         }
+    }
+
+    public static List<User> AllUsersExceptOne(String ID)
+    {
+        List<User> allUserList = UserDBServices.GetAllUser();
+
+        for(User user : allUserList)
+        {
+            if (Objects.equals(user.getId(), ID))
+            {
+                allUserList.remove(user);
+            }
+        }
+
+        return allUserList;
     }
 }
