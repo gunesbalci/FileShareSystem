@@ -11,7 +11,7 @@ public class TeamServices
         INVALID_ID
     }
 
-    public static int CreateTable(String name, List<String> memberIDList)
+    public static Team CreateTable(String name, List<String> memberIDList)
     {
         Team team = new Team(name);
         for(String memberID: memberIDList)
@@ -22,11 +22,11 @@ public class TeamServices
         if(!TeamDBServices.isIDExist(team.getId()))
         {
             TeamDBServices.InsertTeam(team);
-            return ErrorCodes.SUCCESSFUL.ordinal();
+            return team;
         }
         else
         {
-            return ErrorCodes.INVALID_ID.ordinal();
+            return null;
         }
     }
 
