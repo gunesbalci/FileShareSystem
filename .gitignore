@@ -4,6 +4,7 @@ out/
 !**/src/test/**/out/
 /src/LOG/Files
 /src/UserFiles
+/src/TeamFiles
 
 ### Eclipse ###
 .apt_generated
