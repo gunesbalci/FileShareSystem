@@ -5,6 +5,7 @@ out/
 /src/LOG/Files
 /src/UserFiles
 /src/TeamFiles
+/src/Downloads
 
 ### Eclipse ###
 .apt_generated

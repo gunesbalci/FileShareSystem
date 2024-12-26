@@ -223,6 +223,7 @@ public class GUI
         JPanel AppActionButtonsPanel = new JPanel(new GridLayout(2,1,0,10));
         JButton createTeamB = new JButton("Create Team");
         JButton fileUploadB = new JButton("Upload File");
+        JButton fileDownloadB = new JButton("Download File");
         JButton editFileB = new JButton("Edit File");
         JButton shareFileB = new JButton("Share File");
         JButton signOutB = new JButton("Sign Out");
@@ -238,49 +239,34 @@ public class GUI
         UserActionPanel.setBackground(Color.green);
         MiddlePanel.setBackground(Color.blue);
 
-        ActionListener createTeamBHandler = new ActionListener()
-        {
-            @Override
-            public void actionPerformed(ActionEvent e)
-            {
-                MiddlePanel.removeAll();
-                MiddlePanel.add(TeamCreatePanel());
-                MiddlePanel.revalidate();
-                MiddlePanel.repaint();
-            }
-        };
 
-        ActionListener fileUploadBHandler = new ActionListener()
+        ActionListener MiddlePanelHandler = new ActionListener()
         {
             @Override
             public void actionPerformed(ActionEvent e)
             {
-                MiddlePanel.removeAll();
-                MiddlePanel.add(FileUploadPanel());
-                MiddlePanel.revalidate();
-                MiddlePanel.repaint();
-            }
-        };
+                JPanel middlecontent = new JPanel();
 
-        ActionListener fileEditBHandler = new ActionListener()
-        {
-            @Override
-            public void actionPerformed(ActionEvent e)
-            {
-                MiddlePanel.removeAll();
-                MiddlePanel.add(FileEditPanel());
-                MiddlePanel.revalidate();
-                MiddlePanel.repaint();
-            }
-        };
+                switch (e.getActionCommand())
+                {
+                    case "createTeam":
+                        middlecontent = TeamCreatePanel();
+                        break;
+                    case "fileUpload":
+                        middlecontent = FileUploadPanel();
+                        break;
+                    case "fileDownload":
+                        middlecontent = FileDownloadPanel();
+                        break;
+                    case "fileEdit":
+                        middlecontent = FileEditPanel();
+                        break;
+                    case "fileShare":
+                        middlecontent = FileSharePanel();
+                }
 
-        ActionListener shareFileBHandler = new ActionListener()
-        {
-            @Override
-            public void actionPerformed(ActionEvent e)
-            {
                 MiddlePanel.removeAll();
-                MiddlePanel.add(FileSharePanel());
+                MiddlePanel.add(middlecontent);
                 MiddlePanel.revalidate();
                 MiddlePanel.repaint();
             }
@@ -301,15 +287,23 @@ public class GUI
             }
         };
 
-        createTeamB.addActionListener(createTeamBHandler);
-        fileUploadB.addActionListener(fileUploadBHandler);
-        editFileB.addActionListener(fileEditBHandler);
-        shareFileB.addActionListener(shareFileBHandler);
+        createTeamB.setActionCommand("createTeam");
+        fileUploadB.setActionCommand("fileUpload");
+        fileDownloadB.setActionCommand("fileDownload");
+        editFileB.setActionCommand("fileEdit");
+        shareFileB.setActionCommand("fileShare");
+
+        createTeamB.addActionListener(MiddlePanelHandler);
+        fileUploadB.addActionListener(MiddlePanelHandler);
+        fileDownloadB.addActionListener(MiddlePanelHandler);
+        editFileB.addActionListener(MiddlePanelHandler);
+        shareFileB.addActionListener(MiddlePanelHandler);
         signOutB.addActionListener(signOutBHandler);
 
         UserActionPanel.add(signOutB);
         AppActionButtonsPanel.add(createTeamB);
         AppActionButtonsPanel.add(fileUploadB);
+        AppActionButtonsPanel.add(fileDownloadB);
         AppActionButtonsPanel.add(editFileB);
         AppActionButtonsPanel.add(shareFileB);
         AppActionPanel.add(AppActionButtonsPanel);
@@ -586,6 +580,95 @@ public class GUI
         panel.add(filePanel);
         panel.add(teamFilePanel);
         panel.add(editFileB);
+
+        return panel;
+    }
+
+    public static JPanel FileDownloadPanel()
+    {
+        JPanel panel = new JPanel();
+        panel.setPreferredSize(new Dimension(820, 1080));
+
+        JLabel fileLabel = new JLabel("Select your file:");
+        JLabel teamFileLabel = new JLabel("Select your team's file:");
+        JButton downloadFileB = new JButton("Download File");
+
+        JPanel filePanel = new JPanel(new GridLayout(2,1));
+        JPanel radioBFilePanel = new JPanel(new GridLayout(5,3));
+        JPanel teamFilePanel = new JPanel(new GridLayout(2,1));
+        JPanel radioBTeamFilePanel = new JPanel(new GridLayout(5,3));
+
+        filePanel.setPreferredSize(new Dimension(350, 300));
+        teamFilePanel.setPreferredSize(new Dimension(350, 300));
+
+        List<Team> TeamList = TeamServices.GetMemberTable(user.getId());
+
+        File[] fileList = FileServices.GetUserFiles(user.getId());
+        List<File> teamFileList = FileServices.GetTeamFiles(TeamList);
+
+        Dictionary<JRadioButton, File> checkbox_file = new Hashtable<>();
+        ButtonGroup fileButtonGroup = new ButtonGroup();
+        if(fileList != null)
+        {
+            for (File file : fileList)
+            {
+                JRadioButton radioButton = new JRadioButton(file.getName());
+                radioBFilePanel.add(radioButton);
+                checkbox_file.put(radioButton, file);
+                fileButtonGroup.add(radioButton);
+            }
+        }
+        else
+        {
+            JLabel errorMessage = new JLabel("No file uploaded.");
+            radioBFilePanel.add(errorMessage);
+        }
+
+        if(teamFileList != null)
+        {
+            for (File file : teamFileList)
+            {
+                JRadioButton radioButton = new JRadioButton(file.getName());
+                radioBTeamFilePanel.add(radioButton);
+                checkbox_file.put(radioButton, file);
+                fileButtonGroup.add(radioButton);
+            }
+        }
+        else
+        {
+            JLabel errorMessage = new JLabel("No file shared.");
+            radioBTeamFilePanel.add(errorMessage);
+        }
+
+        ActionListener downloadFileBHandler = new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                File file;
+                for (AbstractButton button : java.util.Collections.list(fileButtonGroup.getElements()))
+                {
+                    if (button.isSelected())
+                    {
+                        file = checkbox_file.get(button);
+                        FileServices.FileDownload(file, user.getId());
+                        break;
+                    }
+                }
+            }
+        };
+
+        downloadFileB.addActionListener(downloadFileBHandler);
+
+        filePanel.add(fileLabel);
+        filePanel.add(radioBFilePanel);
+
+        teamFilePanel.add(teamFileLabel);
+        teamFilePanel.add(radioBTeamFilePanel);
+
+        panel.add(filePanel);
+        panel.add(teamFilePanel);
+        panel.add(downloadFileB);
 
         return panel;
     }
