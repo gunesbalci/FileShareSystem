@@ -44,16 +44,20 @@ public class FileServices
         }
     }
 
-    public static int FileDownload(File fileToDownload)
+    public static int FileDownload(File fileToDownload, String userID)
     {
-        File downloadedFile = new File("C:\\Users\\gunes\\İndirilenler");
+        String path = "src/Downloads/" + userID + "/" + fileToDownload.getName();
+        File downloadedFile = new File(path);
 
         Path fileToDownloadPath = Paths.get(fileToDownload.getPath());
         Path downloadedFilePath = Paths.get(downloadedFile.getPath());
 
         try
         {
+            downloadedFile.mkdirs();
+            downloadedFile.createNewFile();
             Files.copy(fileToDownloadPath, downloadedFilePath, StandardCopyOption.REPLACE_EXISTING);
+            System.out.println("indirildi");
             return ErrorCodes.SUCCESSFUL.ordinal();
         }
         catch (IOException e)
