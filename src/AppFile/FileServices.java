@@ -21,7 +21,7 @@ public class FileServices
 
     public static int FileUpload(File fileToUpload, String ownerID, String name)
     {
-        AppFile uploadedAppFile = new AppFile(ownerID, name);
+        AppFile uploadedAppFile = new AppFile(ownerID, name, true);
         File uploadedFile = new File(uploadedAppFile.getPath());
 
         Path fileToUploadPath = Paths.get(fileToUpload.getPath());
@@ -60,6 +60,28 @@ public class FileServices
         catch (IOException e)
         {
             throw new RuntimeException(e);
+        }
+    }
+
+    public static int ShareFile(File fileToShare, String teamID, String name)
+    {
+        AppFile sharedAppFile = new AppFile(teamID, name, false);
+        File sharedFile = new File(sharedAppFile.getPath());
+
+        Path fileToSharePath = Paths.get(fileToShare.getPath());
+        Path sharedFilePath = Paths.get(sharedFile.getPath());
+
+        try
+        {
+            sharedFile.mkdirs();
+            sharedFile.createNewFile();
+            Files.copy(fileToSharePath, sharedFilePath, StandardCopyOption.REPLACE_EXISTING);
+            return ErrorCodes.SUCCESSFUL.ordinal();
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+            return ErrorCodes.FAILED.ordinal();
         }
     }
 }

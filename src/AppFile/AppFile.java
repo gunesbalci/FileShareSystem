@@ -8,11 +8,18 @@ public class AppFile
     private String ownerID;
     private String name;
 
-    public AppFile(String ownerID, String name)
+    public AppFile(String ownerID, String name, boolean UserFile)
     {
         setOwnerID(ownerID);
         setName(name);
-        setPath(ownerID, name);
+        if(UserFile)
+        {
+            setPath(ownerID, name);
+        }
+        else
+        {
+            setTeamPath(ownerID,name);
+        }
     }
 
     public String getPath()
@@ -22,7 +29,12 @@ public class AppFile
 
     public void setPath(String ownerID, String name)
     {
-        this.path = "src/UserFiles/" + ownerID + "/" + name + ".txt";
+        this.path = "src/UserFiles/" + ownerID + "/" + name;
+    }
+
+    public void setTeamPath(String teamID, String name)
+    {
+        this.path = "src/TeamFiles/" + teamID + "/" + name;
     }
 
     public String getOwnerID()
@@ -45,5 +57,3 @@ public class AppFile
         this.name = name;
     }
 }
-
-
