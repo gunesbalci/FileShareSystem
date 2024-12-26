@@ -429,24 +429,33 @@ public class GUI
             @Override
             public void actionPerformed(ActionEvent e)
             {
-                Team team;
+                Team team = new Team();
+                boolean teamSelected = false;
                 for (AbstractButton button : java.util.Collections.list(teamButtonGroup.getElements()))
                 {
                     if (button.isSelected())
                     {
                         team = checkbox_user.get(button);
+                        teamSelected = true;
                         break;
                     }
                 }
 
-                File file;
+                File file = new File("");
+                boolean fileSelected = false;
                 for (AbstractButton button : java.util.Collections.list(fileButtonGroup.getElements()))
                 {
                     if (button.isSelected())
                     {
                         file = checkbox_file.get(button);
+                        fileSelected = true;
                         break;
                     }
+                }
+
+                if(teamSelected && fileSelected)
+                {
+                    FileServices.ShareFile(file, team.getId(), file.getName());
                 }
             }
         };
