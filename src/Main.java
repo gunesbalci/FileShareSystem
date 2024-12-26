@@ -11,9 +11,8 @@ public class Main
 {
     public static void main(String[] args)
     {
-
         FileServices.InitializeAllFiles();
         GUI.InitializeFrame();
-        Process.StartSignInOut();
+        Process.StartAllProcess();
     }
 }

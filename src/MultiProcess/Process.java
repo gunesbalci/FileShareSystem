@@ -17,8 +17,11 @@ public class Process
         {
             try
             {
+                ProcessBuilder process = new ProcessBuilder(
+                        "java", "-cp",
+                        "C:\\3.Yıl\\1.Dönem\\YazılımGeliştirme1\\FileShareSystem\\out\\production\\FileShareSystem",
+                        "LOG.SignInOut_LOG");
 
-                ProcessBuilder process = new ProcessBuilder("java", "-cp", "C:\\3.Yıl\\1.Dönem\\YazılımGeliştirme1\\FileShareSystem\\out\\production\\FileShareSystem", "LOG.SignInOut_LOG");
                 process.directory(new File("C:\\3.Yıl\\1.Dönem\\YazılımGeliştirme1\\FileShareSystem"));
                 process.inheritIO();
                 process.start();
@@ -30,5 +33,64 @@ public class Process
         };
 
         scheduler.scheduleAtFixedRate(task, 0, 5, TimeUnit.SECONDS);
+    }
+
+    public static void StartBackup()
+    {
+        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+
+        Runnable task = () ->
+        {
+            try
+            {
+                ProcessBuilder process = new ProcessBuilder(
+                        "java", "-cp",
+                        "C:\\3.Yıl\\1.Dönem\\YazılımGeliştirme1\\FileShareSystem\\out\\production\\FileShareSystem",
+                        "AppFile.BackupFiles");
+
+                process.directory(new File("C:\\3.Yıl\\1.Dönem\\YazılımGeliştirme1\\FileShareSystem"));
+                process.inheritIO();
+                process.start();
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+        };
+
+        scheduler.scheduleAtFixedRate(task, 0, 5, TimeUnit.SECONDS);
+    }
+
+    public static void StartWatcher()
+    {
+        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+
+        Runnable task = () ->
+        {
+            try
+            {
+                ProcessBuilder process = new ProcessBuilder(
+                        "java", "-cp",
+                        "C:\\3.Yıl\\1.Dönem\\YazılımGeliştirme1\\FileShareSystem\\out\\production\\FileShareSystem",
+                        "AppFile.FileWatcher");
+
+                process.directory(new File("C:\\3.Yıl\\1.Dönem\\YazılımGeliştirme1\\FileShareSystem"));
+                process.inheritIO();
+                process.start();
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+        };
+
+        scheduler.scheduleAtFixedRate(task, 0, 5, TimeUnit.SECONDS);
+    }
+
+    public static void StartAllProcess()
+    {
+        StartSignInOut();
+        StartBackup();
+        StartWatcher();
     }
 }
