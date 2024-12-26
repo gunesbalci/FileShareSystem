@@ -1,5 +1,6 @@
 package AppFile;
 
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -47,5 +48,18 @@ public class FileServices
         File[] files = directory.listFiles();
 
         return files;
+    }
+
+    public static int EditFile(File file)
+    {
+        try
+        {
+            Desktop.getDesktop().edit(file);
+            return ErrorCodes.SUCCESSFUL.ordinal();
+        }
+        catch (IOException e)
+        {
+            throw new RuntimeException(e);
+        }
     }
 }
