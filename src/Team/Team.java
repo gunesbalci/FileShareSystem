@@ -13,6 +13,8 @@ public class Team
     private String name;
     private List<String> memberIDList;
 
+    public Team(){}
+
     public Team(String name)
     {
         memberIDList = new ArrayList<>();
