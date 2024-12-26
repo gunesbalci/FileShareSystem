@@ -69,7 +69,7 @@ public class FileServices
 
     public static File[] GetUserFiles(String ownerID)
     {
-        String directoryPath = "src/UserFiles/" + ownerID;
+        String directoryPath = "src/User_Team_files/UserFiles/" + ownerID;
         File directory = new File(directoryPath);
         File[] files = directory.listFiles();
 
@@ -82,7 +82,7 @@ public class FileServices
 
         for(Team team : TeamList)
         {
-            String directoryPath = "src/TeamFiles/" + team.getId();
+            String directoryPath = "src/User_Team_Files/TeamFiles/" + team.getId();
             File directory = new File(directoryPath);
 
             File[] fileArray = directory.listFiles();
@@ -127,6 +127,39 @@ public class FileServices
         {
             e.printStackTrace();
             return ErrorCodes.FAILED.ordinal();
+        }
+    }
+
+    public static void BackUpFile()
+    {
+        Path files = Path.of("src/User_Team_Files");
+        Path backup = Path.of("src/Backups");
+
+        try
+        {
+            Files.walk(files).forEach(sourcePath ->
+            {
+                Path targetPath = backup.resolve(files.relativize(sourcePath));
+                try
+                {
+                    if(Files.isDirectory(sourcePath))
+                    {
+                        Files.createDirectories(targetPath);
+                    }
+                    else
+                    {
+                        Files.copy(sourcePath, targetPath, StandardCopyOption.REPLACE_EXISTING);
+                    }
+                }
+                catch (RuntimeException | IOException e)
+                {
+                    throw new RuntimeException(e);
+                }
+            });
+        }
+        catch (RuntimeException | IOException e)
+        {
+            throw new RuntimeException(e);
         }
     }
 }

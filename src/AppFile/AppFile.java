@@ -29,12 +29,12 @@ public class AppFile
 
     public void setPath(String ownerID, String name)
     {
-        this.path = "src/UserFiles/" + ownerID + "/" + name;
+        this.path = "src/User_Team_Files/UserFiles/" + ownerID + "/" + name;
     }
 
     public void setTeamPath(String teamID, String name)
     {
-        this.path = "src/TeamFiles/" + teamID + "/" + name;
+        this.path = "src/User_Team_Files/TeamFiles/" + teamID + "/" + name;
     }
 
     public String getOwnerID()
