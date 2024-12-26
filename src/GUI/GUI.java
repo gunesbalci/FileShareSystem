@@ -223,6 +223,7 @@ public class GUI
         JPanel AppActionButtonsPanel = new JPanel(new GridLayout(2,1,0,10));
         JButton createTeamB = new JButton("Create Team");
         JButton fileUploadB = new JButton("Upload File");
+        JButton editFileB = new JButton("Edit File");
         JButton shareFileB = new JButton("Share File");
         JButton signOutB = new JButton("Sign Out");
 
@@ -261,6 +262,18 @@ public class GUI
             }
         };
 
+        ActionListener fileEditBHandler = new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                MiddlePanel.removeAll();
+                MiddlePanel.add(FileEditPanel());
+                MiddlePanel.revalidate();
+                MiddlePanel.repaint();
+            }
+        };
+
         ActionListener shareFileBHandler = new ActionListener()
         {
             @Override
@@ -290,12 +303,14 @@ public class GUI
 
         createTeamB.addActionListener(createTeamBHandler);
         fileUploadB.addActionListener(fileUploadBHandler);
+        editFileB.addActionListener(fileEditBHandler);
         shareFileB.addActionListener(shareFileBHandler);
         signOutB.addActionListener(signOutBHandler);
 
         UserActionPanel.add(signOutB);
         AppActionButtonsPanel.add(createTeamB);
         AppActionButtonsPanel.add(fileUploadB);
+        AppActionButtonsPanel.add(editFileB);
         AppActionButtonsPanel.add(shareFileB);
         AppActionPanel.add(AppActionButtonsPanel);
 
@@ -473,6 +488,67 @@ public class GUI
         panel.add(fileLabel);
         panel.add(fileChooser);
         panel.add(uploadB);
+
+        return panel;
+    }
+
+    public static JPanel FileEditPanel()
+    {
+        JPanel panel = new JPanel();
+        panel.setPreferredSize(new Dimension(820, 1080));
+
+        JLabel fileLabel = new JLabel("Select your file:");
+        JButton editFileB = new JButton("Edit File");
+
+        JPanel filePanel = new JPanel(new GridLayout(2,1));
+        JPanel checkboxFilePanel = new JPanel(new GridLayout(5,3));
+
+        filePanel.setPreferredSize(new Dimension(350, 300));
+
+        File[] fileList = FileServices.GetUserFiles(user.getId());
+        Dictionary<JRadioButton, File> checkbox_file = new Hashtable<>();
+        ButtonGroup fileButtonGroup = new ButtonGroup();
+        if(fileList != null)
+        {
+            for (File file : fileList)
+            {
+                JRadioButton radioButton = new JRadioButton(file.getName());
+                checkboxFilePanel.add(radioButton);
+                checkbox_file.put(radioButton, file);
+                fileButtonGroup.add(radioButton);
+            }
+        }
+        else
+        {
+            JLabel errorMessage = new JLabel("No file uploaded.");
+            checkboxFilePanel.add(errorMessage);
+        }
+
+        ActionListener editFileBHandler = new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                File file;
+                for (AbstractButton button : java.util.Collections.list(fileButtonGroup.getElements()))
+                {
+                    if (button.isSelected())
+                    {
+                        file = checkbox_file.get(button);
+                        FileServices.EditFile(file);
+                        break;
+                    }
+                }
+            }
+        };
+
+        editFileB.addActionListener(editFileBHandler);
+
+        filePanel.add(fileLabel);
+        filePanel.add(checkboxFilePanel);
+
+        panel.add(filePanel);
+        panel.add(editFileB);
 
         return panel;
     }
