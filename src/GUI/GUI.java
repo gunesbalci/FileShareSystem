@@ -507,14 +507,22 @@ public class GUI
         panel.setPreferredSize(new Dimension(820, 1080));
 
         JLabel fileLabel = new JLabel("Select your file:");
+        JLabel teamFileLabel = new JLabel("Select your team's file:");
         JButton editFileB = new JButton("Edit File");
 
         JPanel filePanel = new JPanel(new GridLayout(2,1));
-        JPanel checkboxFilePanel = new JPanel(new GridLayout(5,3));
+        JPanel radioBFilePanel = new JPanel(new GridLayout(5,3));
+        JPanel teamFilePanel = new JPanel(new GridLayout(2,1));
+        JPanel radioBTeamFilePanel = new JPanel(new GridLayout(5,3));
 
         filePanel.setPreferredSize(new Dimension(350, 300));
+        teamFilePanel.setPreferredSize(new Dimension(350, 300));
+
+        List<Team> TeamList = TeamServices.GetMemberTable(user.getId());
 
         File[] fileList = FileServices.GetUserFiles(user.getId());
+        List<File> teamFileList = FileServices.GetTeamFiles(TeamList);
+
         Dictionary<JRadioButton, File> checkbox_file = new Hashtable<>();
         ButtonGroup fileButtonGroup = new ButtonGroup();
         if(fileList != null)
@@ -522,7 +530,7 @@ public class GUI
             for (File file : fileList)
             {
                 JRadioButton radioButton = new JRadioButton(file.getName());
-                checkboxFilePanel.add(radioButton);
+                radioBFilePanel.add(radioButton);
                 checkbox_file.put(radioButton, file);
                 fileButtonGroup.add(radioButton);
             }
@@ -530,7 +538,23 @@ public class GUI
         else
         {
             JLabel errorMessage = new JLabel("No file uploaded.");
-            checkboxFilePanel.add(errorMessage);
+            radioBFilePanel.add(errorMessage);
+        }
+
+        if(teamFileList != null)
+        {
+            for (File file : teamFileList)
+            {
+                JRadioButton radioButton = new JRadioButton(file.getName());
+                radioBTeamFilePanel.add(radioButton);
+                checkbox_file.put(radioButton, file);
+                fileButtonGroup.add(radioButton);
+            }
+        }
+        else
+        {
+            JLabel errorMessage = new JLabel("No file shared.");
+            radioBTeamFilePanel.add(errorMessage);
         }
 
         ActionListener editFileBHandler = new ActionListener()
@@ -554,9 +578,13 @@ public class GUI
         editFileB.addActionListener(editFileBHandler);
 
         filePanel.add(fileLabel);
-        filePanel.add(checkboxFilePanel);
+        filePanel.add(radioBFilePanel);
+
+        teamFilePanel.add(teamFileLabel);
+        teamFilePanel.add(radioBTeamFilePanel);
 
         panel.add(filePanel);
+        panel.add(teamFilePanel);
         panel.add(editFileB);
 
         return panel;
