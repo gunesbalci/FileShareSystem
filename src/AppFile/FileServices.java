@@ -63,7 +63,10 @@ public class FileServices
             File directory = new File(directoryPath);
 
             File[] fileArray = directory.listFiles();
-            files.addAll(Arrays.asList(fileArray));
+            if(fileArray != null)
+            {
+                files.addAll(Arrays.asList(fileArray));
+            }
         }
 
         return files;
