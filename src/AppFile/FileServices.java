@@ -44,6 +44,25 @@ public class FileServices
         }
     }
 
+    public static int FileDownload(File fileToDownload)
+    {
+        File downloadedFile = new File("C:\\Users\\gunes\\İndirilenler");
+
+        Path fileToDownloadPath = Paths.get(fileToDownload.getPath());
+        Path downloadedFilePath = Paths.get(downloadedFile.getPath());
+
+        try
+        {
+            Files.copy(fileToDownloadPath, downloadedFilePath, StandardCopyOption.REPLACE_EXISTING);
+            return ErrorCodes.SUCCESSFUL.ordinal();
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+            return ErrorCodes.FAILED.ordinal();
+        }
+    }
+
     public static File[] GetUserFiles(String ownerID)
     {
         String directoryPath = "src/UserFiles/" + ownerID;
