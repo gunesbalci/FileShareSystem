@@ -1,6 +1,5 @@
 package MultiProcess;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
 import java.util.concurrent.Executors;
@@ -19,7 +18,7 @@ public class Process
             {
                 ProcessBuilder process = new ProcessBuilder(
                         "java", "-cp",
-                        "C:\\3.Yıl\\1.Dönem\\YazılımGeliştirme1\\FileShareSystem\\out\\production\\FileShareSystem",
+                        System.getProperty("java.class.path"),
                         "LOG.SignInOut_LOG");
 
                 process.directory(new File("C:\\3.Yıl\\1.Dönem\\YazılımGeliştirme1\\FileShareSystem"));
@@ -45,7 +44,7 @@ public class Process
             {
                 ProcessBuilder process = new ProcessBuilder(
                         "java", "-cp",
-                        "C:\\3.Yıl\\1.Dönem\\YazılımGeliştirme1\\FileShareSystem\\out\\production\\FileShareSystem",
+                        System.getProperty("java.class.path"),
                         "AppFile.BackupFiles");
 
                 process.directory(new File("C:\\3.Yıl\\1.Dönem\\YazılımGeliştirme1\\FileShareSystem"));
@@ -71,7 +70,7 @@ public class Process
             {
                 ProcessBuilder process = new ProcessBuilder(
                         "java", "-cp",
-                        "C:\\3.Yıl\\1.Dönem\\YazılımGeliştirme1\\FileShareSystem\\out\\production\\FileShareSystem",
+                        System.getProperty("java.class.path"),
                         "AppFile.FileWatcher");
 
                 process.directory(new File("C:\\3.Yıl\\1.Dönem\\YazılımGeliştirme1\\FileShareSystem"));
