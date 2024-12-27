@@ -62,7 +62,7 @@ public class UserServices
 
     public static int ChangeUsername(String ID, String username)
     {
-        if(UserDBServices.isUserNameExist(username))
+        if(!UserDBServices.isUserNameExist(username))
         {
             UserDBServices.UpdateUser(ID, "username", username);
             return ErrorCodes.SUCCESSFUL.ordinal();
