@@ -1,5 +1,6 @@
 package AppFile;
 
+import LOG.Backup_LOG;
 import Team.Team;
 
 import java.awt.*;
@@ -9,6 +10,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -132,6 +135,8 @@ public class FileServices
 
     public static void BackUpFile()
     {
+        String startTime = ZonedDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+
         Path files = Path.of("src/User_Team_Files");
         Path backup = Path.of("src/Backups");
 
@@ -149,10 +154,12 @@ public class FileServices
                     else
                     {
                         Files.copy(sourcePath, targetPath, StandardCopyOption.REPLACE_EXISTING);
+                        Backup_LOG.LogBackup("successful", startTime);
                     }
                 }
                 catch (RuntimeException | IOException e)
                 {
+                    Backup_LOG.LogBackup("failed", startTime);
                     throw new RuntimeException(e);
                 }
             });
