@@ -1,6 +1,7 @@
 package GUI;
 
 import AppFile.FileServices;
+import LOG.FileShare_LOG;
 import LOG.SignInOut_LOG;
 import LOG.Team_LOG;
 import MultiProcess.Process;
@@ -427,12 +428,15 @@ public class GUI
         File[] fileList = FileServices.GetUserFiles(user.getId());
         Dictionary<JRadioButton, File> checkbox_file = new Hashtable<>();
         ButtonGroup fileButtonGroup = new ButtonGroup();
-        for (File file : fileList)
+        if(fileList != null)
         {
-            JRadioButton checkBox = new JRadioButton(file.getName());
-            checkboxFilePanel.add(checkBox);
-            checkbox_file.put(checkBox, file);
-            fileButtonGroup.add(checkBox);
+            for (File file : fileList)
+            {
+                JRadioButton checkBox = new JRadioButton(file.getName());
+                checkboxFilePanel.add(checkBox);
+                checkbox_file.put(checkBox, file);
+                fileButtonGroup.add(checkBox);
+            }
         }
 
         JLabel filePanelL = new JLabel("Select a file:");
@@ -471,6 +475,7 @@ public class GUI
                 if(teamSelected && fileSelected)
                 {
                     FileServices.ShareFile(file, team.getId(), file.getName());
+                    FileShare_LOG.LogFileShare(user.getId(), "successful", file);
                 }
             }
         };
