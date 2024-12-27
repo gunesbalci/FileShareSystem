@@ -6,10 +6,7 @@ import Team.Team;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
+import java.nio.file.*;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -153,8 +150,16 @@ public class FileServices
                     }
                     else
                     {
-                        Files.copy(sourcePath, targetPath, StandardCopyOption.REPLACE_EXISTING);
-                        Backup_LOG.LogBackup("successful", startTime);
+                        try
+                        {
+                            Files.copy(sourcePath, targetPath, StandardCopyOption.REPLACE_EXISTING);
+                            Backup_LOG.LogBackup("successful", startTime);
+                        }
+                        catch (FileSystemException e)
+                        {
+                            System.out.println("File is locked");
+                            Backup_LOG.LogBackup("failed", startTime);
+                        }
                     }
                 }
                 catch (RuntimeException | IOException e)
