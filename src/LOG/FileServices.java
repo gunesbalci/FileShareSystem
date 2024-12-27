@@ -8,5 +8,6 @@ public class FileServices
         Team_LOG.InitializeFile();
         Abnormal_LOG.InitializeFile();
         Backup_LOG.InitializeFile();
+        FileShare_LOG.InitializeFile();
     }
 }

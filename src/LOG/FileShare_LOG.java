@@ -8,17 +8,17 @@ import java.io.IOException;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class Backup_LOG
+public class FileShare_LOG
 {
-    private static File backupLogs = new File("src/LOG/Files/BackupLOG.txt");
+    private static File fileShareLogs = new File("src/LOG/Files/fileShareLOG.txt");
 
     //Creates and initializes the log file.
     public static void InitializeFile()
     {
         try
         {
-            backupLogs = new File("src/LOG/Files/BackupLOG.txt");
-            backupLogs.createNewFile();
+            fileShareLogs = new File("src/LOG/Files/fileShareLOG.txt");
+            fileShareLogs.createNewFile();
         }
         catch (IOException e)
         {
@@ -27,23 +27,22 @@ public class Backup_LOG
         }
     }
 
-    public static void LogBackup(String status, String startTime)
+    public static void LogFileShare(String ID, String status, File sharedFile)
     {
         String finishTime = ZonedDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
-        File source = new File("src/User_Team_Files");
-        long size = FileUtils.sizeOfDirectory(source);
+        long size = FileUtils.sizeOfDirectory(sharedFile);
 
         try
         {
-            if(backupLogs != null)
+            if(fileShareLogs != null)
             {
-                FileWriter fileWriter = new FileWriter(backupLogs, true);
+                FileWriter fileWriter = new FileWriter(fileShareLogs, true);
 
-                String LogString = "backup" + "...";
+                String LogString = ID + "...";
+                LogString += "fileShared" + "...";
                 LogString += status + "...";
-                LogString += source.getPath() + "...";
+                LogString += sharedFile.getPath() + "...";
                 LogString += size + "...";
-                LogString += startTime + "...";
                 LogString += finishTime + "\n";
 
                 fileWriter.write(LogString);
