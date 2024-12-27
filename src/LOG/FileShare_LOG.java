@@ -30,7 +30,7 @@ public class FileShare_LOG
     public static void LogFileShare(String ID, String status, File sharedFile)
     {
         String finishTime = ZonedDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
-        long size = FileUtils.sizeOfDirectory(sharedFile);
+        long size = sharedFile.length();
 
         try
         {
