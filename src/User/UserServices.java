@@ -59,4 +59,34 @@ public class UserServices
 
         return allUserList;
     }
+
+    public static int ChangeUsername(String ID, String username)
+    {
+        if(UserDBServices.isUserNameExist(username))
+        {
+            UserDBServices.UpdateUser(ID, "username", username);
+            return ErrorCodes.SUCCESSFUL.ordinal();
+        }
+        else
+        {
+            return ErrorCodes.INVALID_USERNAME_ID.ordinal();
+        }
+
+    }
+
+    public static int ChangePassword(String ID, String password)
+    {
+        User user = UserDBServices.GetUser(ID);
+        if(user != null)
+        {
+            user.HashandSetPassword(password);
+
+            UserDBServices.UpdateUser(ID, "password", user.getPassword());
+            return ErrorCodes.SUCCESSFUL.ordinal();
+        }
+        else
+        {
+            return ErrorCodes.INVALID_USERNAME_ID.ordinal();
+        }
+    }
 }
