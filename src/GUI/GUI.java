@@ -678,6 +678,7 @@ public class GUI
                     {
                         file = checkbox_file.get(button);
                         FileServices.FileDownload(file, user.getId());
+                        ShareUpload_LOG.LogFileDownload(user.getId(), "successful", file);
                         break;
                     }
                 }
