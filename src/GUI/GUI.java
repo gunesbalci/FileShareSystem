@@ -1,7 +1,7 @@
 package GUI;
 
 import AppFile.FileServices;
-import LOG.FileShare_LOG;
+import LOG.ShareUpload_LOG;
 import LOG.SignInOut_LOG;
 import LOG.Team_LOG;
 import MultiProcess.Process;
@@ -475,7 +475,7 @@ public class GUI
                 if(teamSelected && fileSelected)
                 {
                     FileServices.ShareFile(file, team.getId(), file.getName());
-                    FileShare_LOG.LogFileShare(user.getId(), "successful", file);
+                    ShareUpload_LOG.LogFileShare(user.getId(), "successful", file);
                 }
             }
         };
