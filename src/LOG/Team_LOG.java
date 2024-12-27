@@ -8,7 +8,7 @@ import java.time.format.DateTimeFormatter;
 
 public class Team_LOG
 {
-    private static File TeamLogs;
+    private static File TeamLogs = new File("src/LOG/Files/TeamLOG.txt");
 
     public static void InitializeFile()
     {

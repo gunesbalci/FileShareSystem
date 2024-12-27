@@ -8,7 +8,7 @@ import java.time.format.DateTimeFormatter;
 
 public class Abnormal_LOG
 {
-    private static File AbnormalLogs;
+    private static File AbnormalLogs = new File("src/LOG/Files/AbnormalLOG.txt");
 
     public static void InitializeFile()
     {

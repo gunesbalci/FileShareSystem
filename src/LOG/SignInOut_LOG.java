@@ -13,7 +13,7 @@ import MultiProcess.Process;
 
 public class SignInOut_LOG
 {
-    private static File SignInOutLogs;
+    private static File SignInOutLogs = new File("src/LOG/Files/SignInOutLOG.txt");
 
     //Creates and initializes the log file.
     public static void InitializeFile()

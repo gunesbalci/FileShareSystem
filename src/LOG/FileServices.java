@@ -7,5 +7,6 @@ public class FileServices
         SignInOut_LOG.InitializeFile();
         Team_LOG.InitializeFile();
         Abnormal_LOG.InitializeFile();
+        Backup_LOG.InitializeFile();
     }
 }
