@@ -239,6 +239,7 @@ public class GUI
         JButton fileDownloadB = new JButton("Download File");
         JButton editFileB = new JButton("Edit File");
         JButton shareFileB = new JButton("Share File");
+        JButton changeUsernameB = new JButton("Change Username");
         JButton signOutB = new JButton("Sign Out");
 
         AppActionPanel.setPreferredSize(new Dimension(400, 1080));
@@ -276,6 +277,9 @@ public class GUI
                         break;
                     case "fileShare":
                         middlecontent = FileSharePanel();
+                        break;
+                    case "changeUsername":
+                        middlecontent = ChangeUsernamePanel();
                 }
 
                 MiddlePanel.removeAll();
@@ -305,14 +309,18 @@ public class GUI
         fileDownloadB.setActionCommand("fileDownload");
         editFileB.setActionCommand("fileEdit");
         shareFileB.setActionCommand("fileShare");
+        changeUsernameB.setActionCommand("changeUsername");
 
         createTeamB.addActionListener(MiddlePanelHandler);
         fileUploadB.addActionListener(MiddlePanelHandler);
         fileDownloadB.addActionListener(MiddlePanelHandler);
         editFileB.addActionListener(MiddlePanelHandler);
         shareFileB.addActionListener(MiddlePanelHandler);
+        changeUsernameB.addActionListener(MiddlePanelHandler);
+
         signOutB.addActionListener(signOutBHandler);
 
+        UserActionPanel.add(changeUsernameB);
         UserActionPanel.add(signOutB);
         AppActionButtonsPanel.add(createTeamB);
         AppActionButtonsPanel.add(fileUploadB);
@@ -682,6 +690,57 @@ public class GUI
         panel.add(filePanel);
         panel.add(teamFilePanel);
         panel.add(downloadFileB);
+
+        return panel;
+    }
+
+    public static JPanel ChangeUsernamePanel()
+    {
+        JPanel panel = new JPanel();
+        panel.setPreferredSize(new Dimension(820, 1080));
+
+        JPanel insidePanel = new JPanel(new GridLayout(4,1));
+        insidePanel.setPreferredSize(new Dimension(300, 120));
+
+        JLabel warningLabel = new JLabel("");
+        JLabel label = new JLabel("New username:");
+        JTextField usernameTextField = new JTextField();
+        JButton changeUsername = new JButton("Change Username");
+
+        warningLabel.setPreferredSize(new Dimension(300, 30));
+        label.setPreferredSize(new Dimension(300, 30));
+        usernameTextField.setPreferredSize(new Dimension(300, 30));
+        changeUsername.setPreferredSize(new Dimension(300, 30));
+
+        ActionListener changeUsernameHandler = new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                String newUsername = usernameTextField.getText();
+
+                int code = UserServices.ChangeUsername(user.getId(), newUsername);
+                if(code == 0)
+                {
+                    warningLabel.setForeground(Color.red);
+                    warningLabel.setText("Invalid username.");
+                }
+                if(code == 2)
+                {
+                    warningLabel.setForeground(Color.green);
+                    warningLabel.setText("Username is changed.");
+                }
+            }
+        };
+
+        changeUsername.addActionListener(changeUsernameHandler);
+
+        insidePanel.add(warningLabel);
+        insidePanel.add(label);
+        insidePanel.add(usernameTextField);
+        insidePanel.add(changeUsername);
+
+        panel.add(insidePanel);
 
         return panel;
     }
