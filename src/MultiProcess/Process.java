@@ -11,9 +11,11 @@ public class Process
     static java.lang.Process process_Signinout;
     static java.lang.Process process_Backup;
     static java.lang.Process process_Watch;
+    static java.lang.Process process_DownloadLOG;
 
     static ScheduledExecutorService scheduler_SignInOut;
     static ScheduledExecutorService scheduler_Backup;
+    static ScheduledExecutorService scheduler_DownloadLOG;
 
 
     public static java.lang.Process StartSignInOut()
@@ -91,11 +93,39 @@ public class Process
         return process_Watch;
     }
 
+    public static java.lang.Process StartDownloadLOG()
+    {
+        scheduler_DownloadLOG = Executors.newScheduledThreadPool(1);
+
+        Runnable task = () ->
+        {
+            try
+            {
+                ProcessBuilder processBuilder = new ProcessBuilder(
+                        "java", "-cp",
+                        System.getProperty("java.class.path"),
+                        "LOG.ShareUpload_LOG");
+
+                processBuilder.directory(new File("C:\\3.Yıl\\1.Dönem\\YazılımGeliştirme1\\FileShareSystem"));
+                processBuilder.inheritIO();
+                process_DownloadLOG = processBuilder.start();
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+        };
+
+        scheduler_DownloadLOG.scheduleAtFixedRate(task, 0, 5, TimeUnit.SECONDS);
+        return process_DownloadLOG;
+    }
+
     public static void StartAllProcess()
     {
         StartSignInOut();
         StartBackup();
         StartWatcher();
+        StartDownloadLOG();
     }
 
     public static void KillAllProcess()
@@ -108,6 +138,11 @@ public class Process
         {
             scheduler_Backup.shutdownNow();
         }
+        if (scheduler_DownloadLOG != null)
+        {
+            scheduler_DownloadLOG.shutdownNow();
+        }
+
         if (process_Signinout != null)
         {
             process_Signinout.destroy();
@@ -120,6 +155,9 @@ public class Process
         {
             process_Watch.destroy();
         }
-        System.out.println("öldürdüm");
+        if (process_DownloadLOG != null)
+        {
+            process_DownloadLOG.destroy();
+        }
     }
 }
