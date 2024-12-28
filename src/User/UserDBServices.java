@@ -43,11 +43,13 @@ public class UserDBServices
 
             String username;
             String password;
+            int role;
 
             if(rs.next())
             {
                 username = rs.getString("username");
                 password = rs.getString("password");
+                role = rs.getInt("role");
             }
             else
             {
@@ -58,6 +60,8 @@ public class UserDBServices
             connection.close();
 
             User user = new User(username, password, false);
+            user.setRole(role);
+            
             return user;
         }
         catch (Exception e)
@@ -80,11 +84,13 @@ public class UserDBServices
 
             String id;
             String password;
+            int role;
 
             if(rs.next())
             {
                 id = rs.getString("id");
                 password = rs.getString("password");
+                role = rs.getInt("role");
             }
             else
             {
@@ -96,6 +102,8 @@ public class UserDBServices
 
             User user = new User(username, password, false);
             user.setId(id);
+            user.setRole(role);
+
             return user;
         }
         catch (Exception e)
