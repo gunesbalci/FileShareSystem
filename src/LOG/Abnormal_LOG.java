@@ -24,19 +24,48 @@ public class Abnormal_LOG
         }
     }
 
-    public static void LogTeam(String userID, String behaviourCode)
+    public static void LogAnomalywithUserID(String userID, String behaviourCode)
     {
         String formattedDateTime = ZonedDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
 
         try
         {
-            if (AbnormalLogs == null) {
+            if (AbnormalLogs == null)
+            {
                 throw new IllegalStateException("AbnormalLogs is not initialized!");
             }
+
             FileWriter fileWriter = new FileWriter(AbnormalLogs, true);
 
             String LogString = userID + "...";
             LogString += "abnormalBehaviour" + "...";
+            LogString += behaviourCode + "...";
+            LogString += formattedDateTime + "\n";
+
+            fileWriter.write(LogString);
+            fileWriter.close();
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static void LogAnomaly(String behaviourCode)
+    {
+        String formattedDateTime = ZonedDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+
+        try
+        {
+            if (AbnormalLogs == null)
+            {
+                throw new IllegalStateException("AbnormalLogs is not initialized!");
+            }
+
+            FileWriter fileWriter = new FileWriter(AbnormalLogs, true);
+
+            String LogString = "abnormalBehaviour" + "...";
             LogString += behaviourCode + "...";
             LogString += formattedDateTime + "\n";
 

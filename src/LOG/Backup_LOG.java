@@ -5,8 +5,10 @@ import org.apache.commons.io.FileUtils;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 
 public class Backup_LOG
 {
@@ -55,5 +57,35 @@ public class Backup_LOG
             e.printStackTrace();
             throw new RuntimeException(e);
         }
+    }
+
+    public static void readFile()
+    {
+        try(RandomAccessFile fileReader = new RandomAccessFile(backupLogs, "r"))
+        {
+            fileReader.seek(LastReadPosition.GetLastReadPosition(1));
+
+            String singleLog = fileReader.readLine();
+            while(singleLog != null)
+            {
+                String[] logContent = singleLog.split("\\.\\.\\.");
+
+                if(Objects.equals(logContent[1], "failed"))
+                {
+                    Abnormal_LOG.LogAnomaly("FAILED_BACKUP");
+                }
+                singleLog = fileReader.readLine();
+            }
+            LastReadPosition.WriteLastReadPosition(1, fileReader.getFilePointer());
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    public static void main(String[] args)
+    {
+        readFile();
     }
 }

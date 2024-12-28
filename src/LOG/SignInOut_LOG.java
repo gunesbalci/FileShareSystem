@@ -105,7 +105,7 @@ public class SignInOut_LOG
                             failCount.put(logContent[0], count);
                             if(count > 3)
                             {
-                                Abnormal_LOG.LogTeam(logContent[0], "FAILED_SIGN_IN");
+                                Abnormal_LOG.LogAnomalywithUserID(logContent[0], "TOO_MANY_FAILED_SIGN_IN");
                                 failCount.put(logContent[0], 0);
                             }
                         }
