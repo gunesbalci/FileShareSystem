@@ -84,11 +84,6 @@ public class NotificationDBServices
             String type;
             String sender;
 
-            if(!rs.next())
-            {
-                return null;
-            }
-
             while (rs.next())
             {
                 id = rs.getString("ID");

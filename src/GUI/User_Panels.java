@@ -1,13 +1,10 @@
 package GUI;
 
 import AppFile.FileServices;
-import LOG.ShareUpload_LOG;
-import LOG.SignInOut_LOG;
-import LOG.Team_LOG;
-import Team.Team;
-import Team.TeamServices;
-import User.User;
-import User.UserServices;
+import Notification.*;
+import LOG.*;
+import Team.*;
+import User.*;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
@@ -15,10 +12,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Dictionary;
-import java.util.Enumeration;
-import java.util.Hashtable;
+import java.util.*;
 import java.util.List;
 
 import static GUI.GUI.*;
@@ -40,6 +34,7 @@ public class User_Panels
         JButton editFileB = new JButton("Edit File");
         JButton shareFileB = new JButton("Share File");
         JButton changeUsernameB = new JButton("Change Username");
+        JButton changePasswordB = new JButton("Change Password");
         JButton signOutB = new JButton("Sign Out");
 
         AppActionPanel.setPreferredSize(new Dimension(400, 1080));
@@ -80,6 +75,9 @@ public class User_Panels
                         break;
                     case "changeUsername":
                         middlecontent = ChangeUsernamePanel();
+                        break;
+                    case "changePassword":
+                        middlecontent = ChangePasswordPanel();
                 }
 
                 MiddlePanel.removeAll();
@@ -110,6 +108,7 @@ public class User_Panels
         editFileB.setActionCommand("fileEdit");
         shareFileB.setActionCommand("fileShare");
         changeUsernameB.setActionCommand("changeUsername");
+        changePasswordB.setActionCommand("changePassword");
 
         createTeamB.addActionListener(MiddlePanelHandler);
         fileUploadB.addActionListener(MiddlePanelHandler);
@@ -117,10 +116,12 @@ public class User_Panels
         editFileB.addActionListener(MiddlePanelHandler);
         shareFileB.addActionListener(MiddlePanelHandler);
         changeUsernameB.addActionListener(MiddlePanelHandler);
+        changePasswordB.addActionListener(MiddlePanelHandler);
 
         signOutB.addActionListener(signOutBHandler);
 
         UserActionPanel.add(changeUsernameB);
+        UserActionPanel.add(changePasswordB);
         UserActionPanel.add(signOutB);
         AppActionButtonsPanel.add(createTeamB);
         AppActionButtonsPanel.add(fileUploadB);
@@ -570,5 +571,154 @@ public class User_Panels
         panel.add(insidePanel);
 
         return panel;
+    }
+
+    public static JPanel ChangePasswordPanel()
+    {
+        JPanel panel = new JPanel();
+        panel.setPreferredSize(new Dimension(820, 1080));
+
+        JPanel insidePanel = new JPanel();
+        insidePanel.setLayout(new BoxLayout(insidePanel, BoxLayout.Y_AXIS));
+
+        /*--------------------------------------------------------------------------*/
+        JPanel requestPanel = new JPanel();
+        requestPanel.setLayout(new BoxLayout(requestPanel,BoxLayout.Y_AXIS));
+
+        JLabel requestResult = new JLabel();
+        JLabel requestLabel = new JLabel("Send request to admin to change your password.");
+        JButton sendRequestB = new JButton("Send Request");
+        requestResult.setAlignmentX(Component.CENTER_ALIGNMENT);
+        requestLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        sendRequestB.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        ActionListener sendRequestHandler = new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                String receiver = "e0d4e796-210e-4709-b7a7-3d51d435739e";
+                String type = "password_request";
+
+                int code = NotificationServices.SendNotification(receiver,type,user.getId());
+                if(code == 0)
+                {
+                    requestResult.setText("Request sent successfully.");
+                    requestResult.setForeground(Color.green);
+                }
+                else
+                {
+                    requestResult.setText("Request couldn't sent. Try again.");
+                    requestResult.setForeground(Color.red);
+                }
+            }
+        };
+
+        sendRequestB.addActionListener(sendRequestHandler);
+
+        requestPanel.add(requestResult);
+        requestPanel.add(Box.createVerticalStrut(10));
+        requestPanel.add(requestLabel);
+        requestPanel.add(Box.createVerticalStrut(10));
+        requestPanel.add(sendRequestB);
+
+        /*--------------------------------------------------------------------------*/
+        Notification notification = getPasswordNotification();
+
+        JPanel changePanel = new JPanel(new GridLayout(4,1));
+        changePanel.setPreferredSize(new Dimension(300, 120));
+
+        JLabel warningLabel = new JLabel("");
+        JLabel label = new JLabel("New Password:");
+        JTextField passwordTextField = new JTextField();
+        JButton changePassword = new JButton("Change Password");
+
+        if(notification != null)
+        {
+            if(Objects.equals(notification.getType(), "password_accept"))
+            {
+                warningLabel.setForeground(Color.green);
+                warningLabel.setText("Request accepted.");
+                NotificationDBServices.DeleteNotification(notification.getId());
+            }
+            else if (Objects.equals(notification.getType(), "password_deny"))
+            {
+                warningLabel.setForeground(Color.red);
+                warningLabel.setText("Request denied.");
+                NotificationDBServices.DeleteNotification(notification.getId());
+            }
+        }
+
+        warningLabel.setPreferredSize(new Dimension(300, 30));
+        label.setPreferredSize(new Dimension(300, 30));
+        passwordTextField.setPreferredSize(new Dimension(300, 30));
+        changePassword.setPreferredSize(new Dimension(300, 30));
+
+        ActionListener changeUsernameHandler = new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                String newPassword = passwordTextField.getText();
+
+                if(notification == null)
+                {
+                    warningLabel.setForeground(Color.ORANGE);
+                    warningLabel.setText("Request pending.");
+                }
+                else if(Objects.equals(notification.getType(), "password_accept"))
+                {
+                    int code = UserServices.ChangePassword(user.getId(), newPassword);
+                    if(code == 0)
+                    {
+                        warningLabel.setForeground(Color.red);
+                        warningLabel.setText("Action failed.");
+                    }
+                    if(code == 2)
+                    {
+                        warningLabel.setForeground(Color.green);
+                        warningLabel.setText("Password is changed.");
+                    }
+                }
+                else
+                {
+                    warningLabel.setForeground(Color.red);
+                    warningLabel.setText("Request denied.");
+                }
+
+            }
+        };
+
+        changePassword.addActionListener(changeUsernameHandler);
+
+        changePanel.add(warningLabel);
+        changePanel.add(label);
+        changePanel.add(passwordTextField);
+        changePanel.add(changePassword);
+        /*--------------------------------------------------------------------------*/
+
+        insidePanel.add(requestPanel);
+        insidePanel.add(Box.createVerticalStrut(20));
+        insidePanel.add(changePanel);
+        panel.add(insidePanel);
+
+        return panel;
+    }
+
+    public static Notification getPasswordNotification()
+    {
+        List<Notification> notificationList;
+        String adminID = "e0d4e796-210e-4709-b7a7-3d51d435739e";
+
+        notificationList = NotificationDBServices.GetNotification_byReceiver(user.getId());
+
+        for(Notification notification : notificationList)
+        {
+            if(Objects.equals(notification.getSender(), adminID))
+            {
+                return notification;
+            }
+        }
+        return null;
     }
 }

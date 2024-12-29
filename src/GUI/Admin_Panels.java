@@ -1,6 +1,8 @@
 package GUI;
 
 import AppFile.FileServices;
+import Notification.Notification;
+import Notification.*;
 import Team.Team;
 import Team.TeamServices;
 import User.User;
@@ -12,9 +14,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.util.Dictionary;
-import java.util.Enumeration;
-import java.util.Hashtable;
+import java.util.*;
 import java.util.List;
 
 import static GUI.GUI.user;
@@ -82,7 +82,10 @@ public class Admin_Panels
                         }
                         break;
                     case "Request":
-                        middlecontent = showLogFilesPanel();
+                        if(selectedUser != null)
+                        {
+                            middlecontent = UserRequestPanel(selectedUser);
+                        }
                         break;
                     case "Limit":
                         if(selectedUser != null)
@@ -355,6 +358,73 @@ public class Admin_Panels
         return panel;
     }
 
+    public static JPanel UserRequestPanel(User user)
+    {
+        JPanel panel = new JPanel();
+        panel.setPreferredSize(new Dimension(820, 1080));
+
+        JPanel insidePanel = new JPanel();
+        insidePanel.setLayout(new BoxLayout(insidePanel, BoxLayout.Y_AXIS));
+
+        JLabel requestLabel = new JLabel();
+        Notification notification = getNotification_bySender(user.getId());
+
+        JLabel result = new JLabel();
+        JPanel butonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        JButton acceptB = new JButton("Accept");
+        JButton denyB = new JButton("Deny");
+
+        ActionListener replyRequestHandler = new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                switch (e.getActionCommand())
+                {
+                    case "accept":
+                        NotificationServices.SendNotification(user.getId(), "password_accept", GUI.user.getId());
+                        NotificationDBServices.DeleteNotification(notification.getId());
+                        result.setText("Request accepted.");
+                        break;
+                    case "deny":
+                        NotificationServices.SendNotification(user.getId(), "password_deny", GUI.user.getId());
+                        NotificationDBServices.DeleteNotification(notification.getId());
+                        result.setText("Request denied.");
+                }
+            }
+        };
+
+        acceptB.setActionCommand("accept");
+        denyB.setActionCommand("deny");
+        acceptB.addActionListener(replyRequestHandler);
+        denyB.addActionListener(replyRequestHandler);
+        acceptB.setForeground(Color.green);
+        denyB.setForeground(Color.red);
+
+        butonPanel.add(acceptB);
+        butonPanel.add(denyB);
+
+        if(notification != null)
+        {
+            requestLabel.setText("User requests to change their password. Reply the request:");
+
+            insidePanel.add(result);
+            insidePanel.add(Box.createVerticalStrut(10));
+            insidePanel.add(requestLabel);
+            insidePanel.add(Box.createVerticalStrut(10));
+            insidePanel.add(butonPanel);
+        }
+        else
+        {
+            requestLabel.setText("User has no request.");
+            insidePanel.add(requestLabel);
+        }
+
+        panel.add(insidePanel);
+
+        return panel;
+    }
+
     public static User getSelectedUser()
     {
         if (userButtonGroup != null && radioButton_user != null)
@@ -375,6 +445,22 @@ public class Admin_Panels
                         break;
                     }
                 }
+            }
+        }
+        return null;
+    }
+
+    public static Notification getNotification_bySender(String sender)
+    {
+        List<Notification> notificationList;
+
+        notificationList = NotificationDBServices.GetNotification_byReceiver(user.getId());
+
+        for(Notification notification : notificationList)
+        {
+            if(Objects.equals(notification.getSender(), sender))
+            {
+                return notification;
             }
         }
         return null;
