@@ -12,10 +12,12 @@ public class Process
     static java.lang.Process process_Backup;
     static java.lang.Process process_Watch;
     static java.lang.Process process_DownloadLOG;
+    static java.lang.Process process_requestLOG;
 
     static ScheduledExecutorService scheduler_SignInOut;
     static ScheduledExecutorService scheduler_Backup;
     static ScheduledExecutorService scheduler_DownloadLOG;
+    static ScheduledExecutorService scheduler_requestLOG;
 
 
     public static java.lang.Process StartSignInOut()
@@ -120,12 +122,40 @@ public class Process
         return process_DownloadLOG;
     }
 
+    public static java.lang.Process StartRequestLOG()
+    {
+        scheduler_requestLOG = Executors.newScheduledThreadPool(1);
+
+        Runnable task = () ->
+        {
+            try
+            {
+                ProcessBuilder processBuilder = new ProcessBuilder(
+                        "java", "-cp",
+                        System.getProperty("java.class.path"),
+                        "LOG.PasswordRequest_LOG");
+
+                processBuilder.directory(new File("C:\\3.Yıl\\1.Dönem\\YazılımGeliştirme1\\FileShareSystem"));
+                processBuilder.inheritIO();
+                process_requestLOG = processBuilder.start();
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+        };
+
+        scheduler_requestLOG.scheduleAtFixedRate(task, 0, 5, TimeUnit.SECONDS);
+        return process_requestLOG;
+    }
+
     public static void StartAllProcess()
     {
         StartSignInOut();
         StartBackup();
         StartWatcher();
         StartDownloadLOG();
+        StartRequestLOG();
     }
 
     public static void KillAllProcess()
@@ -141,6 +171,10 @@ public class Process
         if (scheduler_DownloadLOG != null)
         {
             scheduler_DownloadLOG.shutdownNow();
+        }
+        if (scheduler_requestLOG != null)
+        {
+            scheduler_requestLOG.shutdownNow();
         }
 
         if (process_Signinout != null)
@@ -158,6 +192,10 @@ public class Process
         if (process_DownloadLOG != null)
         {
             process_DownloadLOG.destroy();
+        }
+        if (process_requestLOG != null)
+        {
+            process_requestLOG.destroy();
         }
     }
 }

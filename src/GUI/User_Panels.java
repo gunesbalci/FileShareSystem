@@ -603,6 +603,7 @@ public class User_Panels
                 int code = NotificationServices.SendNotification(receiver,type,user.getId());
                 if(code == 0)
                 {
+                    PasswordRequest_LOG.LogRequest(user.getId(), "password_request");
                     requestResult.setText("Request sent successfully.");
                     requestResult.setForeground(Color.green);
                 }

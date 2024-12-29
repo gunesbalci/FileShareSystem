@@ -1,6 +1,7 @@
 package GUI;
 
 import AppFile.FileServices;
+import LOG.PasswordRequest_LOG;
 import Notification.Notification;
 import Notification.*;
 import Team.Team;
@@ -384,11 +385,13 @@ public class Admin_Panels
                     case "accept":
                         NotificationServices.SendNotification(user.getId(), "password_accept", GUI.user.getId());
                         NotificationDBServices.DeleteNotification(notification.getId());
+                        PasswordRequest_LOG.LogRequest(user.getId(), "password_accept");
                         result.setText("Request accepted.");
                         break;
                     case "deny":
                         NotificationServices.SendNotification(user.getId(), "password_deny", GUI.user.getId());
                         NotificationDBServices.DeleteNotification(notification.getId());
+                        PasswordRequest_LOG.LogRequest(user.getId(), "password_deny");
                         result.setText("Request denied.");
                 }
             }
