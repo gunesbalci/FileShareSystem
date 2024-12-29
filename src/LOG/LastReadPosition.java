@@ -47,7 +47,10 @@ public class LastReadPosition
         try
         {
             Scanner fileReader = new Scanner(lastReadPositionFile);
-            allLastReadPositions = fileReader.nextLine().split("\\.\\.\\.");
+            while(fileReader.hasNext())
+            {
+                allLastReadPositions = fileReader.nextLine().split("\\.\\.\\.");
+            }
         }
         catch (FileNotFoundException e)
         {
