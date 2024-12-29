@@ -10,12 +10,12 @@ public class User
     private String id;
     private String username;
     private String password;
-    private int max_fileSize;
+    private Integer max_fileSize;
     private int max_fileNum;
     private int role;
 
     //Constructs user. Can hash the password.
-    public User(String username, String password, boolean HashPassword)
+    public User(String username, String password, boolean HashPassword, Integer max_fileSize)
     {
         setId(UUID.randomUUID().toString());
         setUsername(username);
@@ -28,6 +28,7 @@ public class User
         {
             setPassword(password);
         }
+        setMax_fileSize(max_fileSize);
     }
 
     //Returns the query to insert this user into database.
@@ -85,7 +86,7 @@ public class User
         return max_fileSize;
     }
 
-    public void setMax_fileSize(int max_fileSize)
+    public void setMax_fileSize(Integer max_fileSize)
     {
         this.max_fileSize = max_fileSize;
     }

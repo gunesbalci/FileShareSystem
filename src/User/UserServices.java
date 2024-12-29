@@ -19,7 +19,7 @@ public class UserServices
     //Checks id and username then registers user.
     public static int Register(String username, String password)
     {
-        User user = new User(username,password,true);
+        User user = new User(username,password,true,null);
 
         if(!UserDBServices.isUserNameExist(username) && !UserDBServices.isUserIDExist(user.getId()))
         {

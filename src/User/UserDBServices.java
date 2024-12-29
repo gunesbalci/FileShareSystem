@@ -43,6 +43,7 @@ public class UserDBServices
 
             String username;
             String password;
+            int max_fileSize;
             int role;
 
             if(rs.next())
@@ -50,6 +51,7 @@ public class UserDBServices
                 username = rs.getString("username");
                 password = rs.getString("password");
                 role = rs.getInt("role");
+                max_fileSize = rs.getInt("max_fileSize");
             }
             else
             {
@@ -59,7 +61,8 @@ public class UserDBServices
             rs.close();
             connection.close();
 
-            User user = new User(username, password, false);
+            User user = new User(username, password, false, max_fileSize);
+            user.setId(id);
             user.setRole(role);
             
             return user;
@@ -85,12 +88,14 @@ public class UserDBServices
             String id;
             String password;
             int role;
+            int max_fileSize;
 
             if(rs.next())
             {
                 id = rs.getString("id");
                 password = rs.getString("password");
                 role = rs.getInt("role");
+                max_fileSize = rs.getInt("max_fileSize");
             }
             else
             {
@@ -100,7 +105,7 @@ public class UserDBServices
             rs.close();
             connection.close();
 
-            User user = new User(username, password, false);
+            User user = new User(username, password, false, max_fileSize);
             user.setId(id);
             user.setRole(role);
 
@@ -128,7 +133,8 @@ public class UserDBServices
                 String username = rs.getString("username");
                 String password = rs.getString("password");
                 String id = rs.getString("id");
-                User user = new User(username, password, false);
+                int max_fileSize = rs.getInt("max_fileSize");
+                User user = new User(username, password, false, max_fileSize);
                 user.setId(id);
                 userList.add(user);
             }

@@ -9,7 +9,7 @@ import java.util.Scanner;
 public class LastReadPosition
 {
     private static File lastReadPositionFile = new File("src/LOG/Files/LastReadPositionFile.txt");
-    private static String[] allLastReadPositions = new String[2];
+    private static String[] allLastReadPositions = new String[3];
 
     public static long GetLastReadPosition(int from)
     {
