@@ -9,6 +9,7 @@ public class MyConnection
     private static String userTable = "user";
     private static String teamTable = "team";
     private static String teamMemberTable = "team_member";
+    private static String notificationTable = "notification";
 
     public static String getMyConnection()
     {
@@ -38,5 +39,10 @@ public class MyConnection
     public static String getTeamMemberTable()
     {
         return teamMemberTable;
+    }
+
+    public static String getNotificationTable()
+    {
+        return notificationTable;
     }
 }
