@@ -1,5 +1,6 @@
 package User;
 
+import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
 import MyConnection.MyConnection;
@@ -72,8 +73,7 @@ public class User
     //First hashes the given password then sets the hashed password.
     public void HashandSetPassword(String password)
     {
-        String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt(12));
-        this.password = hashedPassword;
+        this.password = BCrypt.hashpw(new String(password.getBytes(StandardCharsets.UTF_8)), BCrypt.gensalt(12));
     }
 
     public void setPassword(String password)

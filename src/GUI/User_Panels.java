@@ -597,7 +597,7 @@ public class User_Panels
             @Override
             public void actionPerformed(ActionEvent e)
             {
-                String receiver = "e0d4e796-210e-4709-b7a7-3d51d435739e";
+                String receiver = "a1ee8135-af1a-44f1-9a24-12cfe12d4c72";
                 String type = "password_request";
 
                 int code = NotificationServices.SendNotification(receiver,type,user.getId());
@@ -708,7 +708,7 @@ public class User_Panels
     public static Notification getPasswordNotification()
     {
         List<Notification> notificationList;
-        String adminID = "e0d4e796-210e-4709-b7a7-3d51d435739e";
+        String adminID = "a1ee8135-af1a-44f1-9a24-12cfe12d4c72";
 
         notificationList = NotificationDBServices.GetNotification_byReceiver(user.getId());
 

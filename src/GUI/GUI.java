@@ -90,7 +90,9 @@ public class GUI
             {
                 if(Arrays.equals(passwordTF.getPassword(), password2TF.getPassword()))
                 {
-                    int code = UserServices.Register(usernameTF.getText(), Arrays.toString(passwordTF.getPassword()));
+                    char[] passwordChars = passwordTF.getPassword();
+                    String password = String.valueOf(passwordChars);
+                    int code = UserServices.Register(usernameTF.getText(), password);
                     if(code == 2)
                     {
                         alertLabel.setText("Register Successful");
@@ -174,7 +176,9 @@ public class GUI
             @Override
             public void actionPerformed(ActionEvent e)
             {
-                int code = UserServices.SignIn(usernameTF.getText(), Arrays.toString(passwordTF.getPassword()));
+                char[] passwordChars = passwordTF.getPassword();
+                String password = String.valueOf(passwordChars);
+                int code = UserServices.SignIn(usernameTF.getText(), password);
                 if(code == 2)
                 {
                     user = UserDBServices.GetUserWname(usernameTF.getText());
