@@ -297,6 +297,10 @@ public class User_Panels
         JPanel panel = new JPanel();
         panel.setPreferredSize(new Dimension(820, 1080));
 
+        JPanel insidePael = new JPanel();
+        insidePael.setLayout(new BoxLayout(insidePael, BoxLayout.Y_AXIS));
+
+        JLabel result = new JLabel();
         JLabel fileLabel = new JLabel("Select your file:");
         JFileChooser fileChooser = new JFileChooser();
         JButton uploadB = new JButton("Upload File");
@@ -307,16 +311,33 @@ public class User_Panels
             public void actionPerformed(ActionEvent e)
             {
                 File uploadFile = fileChooser.getSelectedFile();
-
-                FileServices.FileUpload(uploadFile, user.getId(), uploadFile.getName());
+                System.out.println("limit:" + user.getMax_fileSize());
+                System.out.println("filesize:" + uploadFile.length());
+                if((uploadFile.length() <= user.getMax_fileSize()) || (user.getMax_fileSize() == 0))
+                {
+                    FileServices.FileUpload(uploadFile, user.getId(), uploadFile.getName());
+                    result.setText("File is uploaded successfully.");
+                    result.setForeground(Color.green);
+                }
+                else
+                {
+                    result.setText("Selected file is too large.");
+                    result.setForeground(Color.red);
+                }
             }
         };
 
         uploadB.addActionListener(uploadBHandler);
 
-        panel.add(fileLabel);
-        panel.add(fileChooser);
-        panel.add(uploadB);
+        insidePael.add(result);
+        insidePael.add(Box.createVerticalStrut(10));
+        insidePael.add(fileLabel);
+        insidePael.add(Box.createVerticalStrut(10));
+        insidePael.add(fileChooser);
+        insidePael.add(Box.createVerticalStrut(10));
+        insidePael.add(uploadB);
+
+        panel.add(insidePael);
 
         return panel;
     }

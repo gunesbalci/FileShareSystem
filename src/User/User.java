@@ -81,7 +81,7 @@ public class User
         this.password = password;
     }
 
-    public int getMax_fileSize()
+    public Integer getMax_fileSize()
     {
         return max_fileSize;
     }
