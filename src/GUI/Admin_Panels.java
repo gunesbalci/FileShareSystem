@@ -2,6 +2,7 @@ package GUI;
 
 import AppFile.FileServices;
 import LOG.PasswordRequest_LOG;
+import LOG.SignInOut_LOG;
 import Notification.Notification;
 import Notification.*;
 import Team.Team;
@@ -15,10 +16,14 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.List;
 
-import static GUI.GUI.user;
+import static GUI.GUI.*;
+import static GUI.GUI.frame;
 
 public class Admin_Panels
 {
@@ -31,23 +36,18 @@ public class Admin_Panels
         JPanel panel = new JPanel(new BorderLayout());
         panel.setOpaque(true);
 
-        JPanel leftStaticPanel = new JPanel(new GridBagLayout());
+        JPanel leftPanel = new JPanel();
         JPanel rightPanel = new JPanel();
         JPanel MiddlePanel = new JPanel();
-        JPanel leftButtonsPanel = new JPanel(new GridLayout(2,1,0,10));
+        JPanel leftButtonsPanel = new JPanel(new GridLayout(3,1,0,10));
         JButton showUsersB = new JButton("Show Users");
         JButton showLogFilesB = new JButton("Show Log Files");
+        JButton signOut = new JButton("Sign Out");
 
-        leftStaticPanel.setPreferredSize(new Dimension(400, 1080));
+        leftPanel.setPreferredSize(new Dimension(400, 1080));
         rightPanel.setPreferredSize(new Dimension(400, 1080));
         MiddlePanel.setPreferredSize(new Dimension(820, 1080));
-        leftButtonsPanel.setPreferredSize(new Dimension(300,110));
-
-        leftButtonsPanel.setAlignmentX(0);
-
-        leftStaticPanel.setBackground(Color.red);
-        rightPanel.setBackground(Color.green);
-        MiddlePanel.setBackground(Color.blue);
+        leftButtonsPanel.setPreferredSize(new Dimension(400,190));
 
         MiddlePanelHandler = new ActionListener()
         {
@@ -66,7 +66,6 @@ public class Admin_Panels
                         rightcontent = showUsersRIGHTPanel();
                         break;
                     case "showLogFiles":
-                        middlecontent = showLogFilesPanel();
                         rightcontent = showLogFilesRIGHTPanel();
                         break;
 
@@ -74,25 +73,59 @@ public class Admin_Panels
                         if(selectedUser != null)
                         {
                             middlecontent = UserInfoPanel(selectedUser);
+                            rightcontent = showUsersRIGHTPanel();
                         }
                         break;
                     case "UserDelete":
                         if(selectedUser != null)
                         {
                             middlecontent = UserDeletePanel(selectedUser);
+                            rightcontent = showUsersRIGHTPanel();
                         }
                         break;
                     case "Request":
                         if(selectedUser != null)
                         {
                             middlecontent = UserRequestPanel(selectedUser);
+                            rightcontent = showUsersRIGHTPanel();
                         }
                         break;
                     case "Limit":
                         if(selectedUser != null)
                         {
                             middlecontent = UserLimitPanel(selectedUser);
+                            rightcontent = showUsersRIGHTPanel();
                         }
+                        break;
+                    case "0":
+                        selectedFile = new File("src/LOG/Files/AbnormalLOG.txt");
+                        middlecontent = showLogFilesPanel();
+                        rightcontent = showLogFilesRIGHTPanel();
+                        break;
+                    case "1":
+                        selectedFile = new File("src/LOG/Files/BackupLOG.txt");
+                        middlecontent = showLogFilesPanel();
+                        rightcontent = showLogFilesRIGHTPanel();
+                        break;
+                    case "2":
+                        selectedFile = new File("src/LOG/Files/fileShareLOG.txt");
+                        middlecontent = showLogFilesPanel();
+                        rightcontent = showLogFilesRIGHTPanel();
+                        break;
+                    case "3":
+                        selectedFile = new File("src/LOG/Files/PasswordRequestLOG.txt");
+                        middlecontent = showLogFilesPanel();
+                        rightcontent = showLogFilesRIGHTPanel();
+                        break;
+                    case "4":
+                        selectedFile = new File("src/LOG/Files/SignInOutLOG.txt");
+                        middlecontent = showLogFilesPanel();
+                        rightcontent = showLogFilesRIGHTPanel();
+                        break;
+                    case "5":
+                        selectedFile = new File("src/LOG/Files/TeamLOG.txt");
+                        middlecontent = showLogFilesPanel();
+                        rightcontent = showLogFilesRIGHTPanel();
                         break;
                 }
 
@@ -114,10 +147,26 @@ public class Admin_Panels
         showUsersB.addActionListener(MiddlePanelHandler);
         showLogFilesB.addActionListener(MiddlePanelHandler);
 
-        leftStaticPanel.add(showUsersB);
-        leftStaticPanel.add(showLogFilesB);
+        signOut.addActionListener(new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                frame.getContentPane().removeAll();
+                frame.add(SignInScreen());
+                frame.revalidate();
+                frame.repaint();
 
-        panel.add(leftStaticPanel, BorderLayout.WEST);
+                user = null;
+            }
+        });
+
+        leftButtonsPanel.add(showUsersB);
+        leftButtonsPanel.add(showLogFilesB);
+        leftButtonsPanel.add(signOut);
+        leftPanel.add(leftButtonsPanel);
+
+        panel.add(leftPanel, BorderLayout.WEST);
         panel.add(rightPanel, BorderLayout.EAST);
         panel.add(MiddlePanel, BorderLayout.CENTER);
 
@@ -150,11 +199,37 @@ public class Admin_Panels
         return panel;
     }
 
+    public static File selectedFile;
     public static JPanel showLogFilesPanel()
     {
-        JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        JPanel panel = new JPanel(new BorderLayout());
         panel.setPreferredSize(new Dimension(820, 1080));
 
+        JPanel insidePanel = new JPanel();
+        try
+        {
+            List<String> lines = Files.readAllLines(Paths.get(selectedFile.getPath()));
+            insidePanel.setLayout(new GridLayout(0,1));
+
+            for(String line : lines)
+            {
+                JLabel label = new JLabel(line);
+                insidePanel.add(label);
+            }
+            insidePanel.setPreferredSize(new Dimension(800, Math.max(1080, lines.size() * 20)));
+        }
+        catch (IOException e)
+        {
+            System.out.println("Error reading file: " + e.getMessage());
+        }
+
+        JScrollPane scrollPane = new JScrollPane(insidePanel);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.setPreferredSize(new Dimension(800, 900));
+        scrollPane.getVerticalScrollBar().setUnitIncrement(25);
+
+        panel.add(scrollPane, BorderLayout.CENTER);
         return panel;
     }
 
@@ -196,6 +271,23 @@ public class Admin_Panels
         JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         panel.setPreferredSize(new Dimension(400, 1080));
 
+        JPanel insidePanel = new JPanel(new GridLayout(6,1,0,10));
+        insidePanel.setPreferredSize(new Dimension(300, 370));
+
+        File[] files = new File("src/LOG/Files").listFiles();
+
+        int count = 0;
+        assert files != null;
+        for(File file : files)
+        {
+            JButton button = new JButton(file.getName());
+            button.setActionCommand(String.valueOf(count));
+            button.addActionListener(MiddlePanelHandler);
+            insidePanel.add(button);
+            count++;
+        }
+
+        panel.add(insidePanel);
         return panel;
     }
 

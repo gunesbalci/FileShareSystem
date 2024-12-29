@@ -24,10 +24,11 @@ public class User_Panels
         JPanel panel = new JPanel(new BorderLayout());
         panel.setOpaque(true);
 
-        JPanel AppActionPanel = new JPanel(new GridBagLayout());
+        JPanel AppActionPanel = new JPanel();
         JPanel UserActionPanel = new JPanel();
         JPanel MiddlePanel = new JPanel();
-        JPanel AppActionButtonsPanel = new JPanel(new GridLayout(2,1,0,10));
+        JPanel AppActionButtonsPanel = new JPanel(new GridLayout(5,1,0,10));
+        JPanel UserActionButtonsPanel = new JPanel(new GridLayout(3,1,0,10));
         JButton createTeamB = new JButton("Create Team");
         JButton fileUploadB = new JButton("Upload File");
         JButton fileDownloadB = new JButton("Download File");
@@ -40,14 +41,10 @@ public class User_Panels
         AppActionPanel.setPreferredSize(new Dimension(400, 1080));
         UserActionPanel.setPreferredSize(new Dimension(400, 1080));
         MiddlePanel.setPreferredSize(new Dimension(820, 1080));
-        AppActionButtonsPanel.setPreferredSize(new Dimension(300,110));
+        AppActionButtonsPanel.setPreferredSize(new Dimension(300,310));
+        UserActionButtonsPanel.setPreferredSize(new Dimension(300,190));
 
         AppActionButtonsPanel.setAlignmentX(0);
-
-        AppActionPanel.setBackground(Color.red);
-        UserActionPanel.setBackground(Color.green);
-        MiddlePanel.setBackground(Color.blue);
-
 
         ActionListener MiddlePanelHandler = new ActionListener()
         {
@@ -120,9 +117,11 @@ public class User_Panels
 
         signOutB.addActionListener(signOutBHandler);
 
-        UserActionPanel.add(changeUsernameB);
-        UserActionPanel.add(changePasswordB);
-        UserActionPanel.add(signOutB);
+        UserActionButtonsPanel.add(changeUsernameB);
+        UserActionButtonsPanel.add(changePasswordB);
+        UserActionButtonsPanel.add(signOutB);
+        UserActionPanel.add(UserActionButtonsPanel);
+
         AppActionButtonsPanel.add(createTeamB);
         AppActionButtonsPanel.add(fileUploadB);
         AppActionButtonsPanel.add(fileDownloadB);
