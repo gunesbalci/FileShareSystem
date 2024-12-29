@@ -96,7 +96,7 @@ public class ShareUpload_LOG
     {
         try(RandomAccessFile fileReader = new RandomAccessFile(fileShareLogs, "r"))
         {
-            fileReader.seek(LastReadPosition.GetLastReadPosition(2));
+            fileReader.seek(LastReadPosition.GetLastReadPosition(1));
 
             Dictionary<String, Integer> downloadCount = new Hashtable<>();
             Dictionary<String, LocalDateTime> lastDownloadedTime = new Hashtable<>();
@@ -137,7 +137,7 @@ public class ShareUpload_LOG
                 }
                 singleLog = fileReader.readLine();
             }
-            LastReadPosition.WriteLastReadPosition(2, fileReader.getFilePointer());
+            LastReadPosition.WriteLastReadPosition(1, fileReader.getFilePointer());
         }
         catch (IOException e)
         {

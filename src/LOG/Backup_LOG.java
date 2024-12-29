@@ -63,7 +63,7 @@ public class Backup_LOG
     {
         try(RandomAccessFile fileReader = new RandomAccessFile(backupLogs, "r"))
         {
-            fileReader.seek(LastReadPosition.GetLastReadPosition(1));
+            fileReader.seek(LastReadPosition.GetLastReadPosition(0));
 
             String singleLog = fileReader.readLine();
             while(singleLog != null)
@@ -76,7 +76,7 @@ public class Backup_LOG
                 }
                 singleLog = fileReader.readLine();
             }
-            LastReadPosition.WriteLastReadPosition(1, fileReader.getFilePointer());
+            LastReadPosition.WriteLastReadPosition(0, fileReader.getFilePointer());
         }
         catch (IOException e)
         {

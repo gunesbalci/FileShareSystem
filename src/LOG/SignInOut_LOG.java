@@ -82,7 +82,7 @@ public class SignInOut_LOG
     {
         try(RandomAccessFile fileReader = new RandomAccessFile(SignInOutLogs, "r"))
         {
-            fileReader.seek(LastReadPosition.GetLastReadPosition(0));
+            fileReader.seek(LastReadPosition.GetLastReadPosition(2));
 
             Dictionary<String, Integer> failCount = new Hashtable<>();
             Dictionary<String, LocalDateTime> lastFailedTime = new Hashtable<>();
@@ -123,7 +123,7 @@ public class SignInOut_LOG
                 }
                 singleLog = fileReader.readLine();
             }
-            LastReadPosition.WriteLastReadPosition(0, fileReader.getFilePointer());
+            LastReadPosition.WriteLastReadPosition(2, fileReader.getFilePointer());
         }
         catch (IOException e)
         {

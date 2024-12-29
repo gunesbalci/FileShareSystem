@@ -8,31 +8,53 @@ import java.util.Scanner;
 
 public class LastReadPosition
 {
-    private static File lastReadPositionFile = new File("src/LOG/Files/LastReadPositionFile.txt");
-    private static String[] allLastReadPositions = new String[3];
+    private static File LRP_backup_file = new File("src/LOG/LastReadPositions/LRP_backup.txt"); //0
+    private static File LRP_sharedownload_file = new File("src/LOG/LastReadPositions/LRP_sharedownload.txt"); //1
+    private static File LRP_signinout_file = new File("src/LOG/LastReadPositions/LRP_signinout.txt"); //2
+    private static String LRP_backup;
+    private static String LRP_sharedownload;
+    private static String LRP_signinout;
 
     public static long GetLastReadPosition(int from)
     {
         long lastReadPosition;
-        setAllLastReadPositions();
+        setLRP(from);
 
-        lastReadPosition = Long.parseLong(allLastReadPositions[from]);
+        switch (from)
+        {
+            case 0:
+                lastReadPosition = Long.parseLong(LRP_backup);
+                break;
+            case 1:
+                lastReadPosition = Long.parseLong(LRP_sharedownload);
+                break;
+            default:
+                lastReadPosition = Long.parseLong(LRP_signinout);
+                break;
+        }
 
         return lastReadPosition;
     }
 
     public static void WriteLastReadPosition(int to, long lastReadPosition)
     {
-        setAllLastReadPositions();
-
         try
         {
-            FileWriter fileWriter = new FileWriter(lastReadPositionFile);
+            FileWriter fileWriter;
+            switch (to)
+            {
+                case 0:
+                    fileWriter = new FileWriter(LRP_backup_file);
+                    break;
+                case 1:
+                    fileWriter = new FileWriter(LRP_sharedownload_file);
+                    break;
+                default:
+                    fileWriter = new FileWriter(LRP_signinout_file);
+                    break;
+            }
 
-            allLastReadPositions[to] = String.valueOf(lastReadPosition);
-            String stringPositions = String.join("...", allLastReadPositions);
-
-            fileWriter.write(stringPositions);
+            fileWriter.write(String.valueOf(lastReadPosition));
             fileWriter.close();
         }
         catch (IOException e)
@@ -44,12 +66,30 @@ public class LastReadPosition
 
     public static void setAllLastReadPositions()
     {
+        setLRP(0);
+        setLRP(1);
+        setLRP(2);
+    }
+
+    public static void setLRP(int from)
+    {
         try
         {
-            Scanner fileReader = new Scanner(lastReadPositionFile);
-            while(fileReader.hasNext())
+            Scanner fileReader;
+            switch (from)
             {
-                allLastReadPositions = fileReader.nextLine().split("\\.\\.\\.");
+                case 0:
+                    fileReader = new Scanner(LRP_backup_file);
+                    LRP_backup = fileReader.nextLine();
+                    break;
+                case 1:
+                    fileReader = new Scanner(LRP_sharedownload_file);
+                    LRP_sharedownload = fileReader.nextLine();
+                    break;
+                case 2:
+                    fileReader = new Scanner(LRP_signinout_file);
+                    LRP_signinout = fileReader.nextLine();
+                    break;
             }
         }
         catch (FileNotFoundException e)

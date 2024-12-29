@@ -6,6 +6,7 @@ out/
 /src/Downloads
 /src/User_Team_Files
 /src/Backups
+/src/LOG/LastReadPositions
 
 ### Eclipse ###
 .apt_generated
